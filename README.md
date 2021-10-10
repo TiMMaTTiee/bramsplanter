@@ -1,4 +1,4 @@
-# bramsplanter
+# Bram/s Planter
 Webapp for Bram's planter
 
 ## Installation docker
