@@ -1,15 +1,7 @@
 <template>
-  <div class="about">
-    <h1>Backend Resources Demo</h1>
-    <p>Click on the links below to fetch data from the Flask server</p>
-    <a href="" @click.prevent="fetchResource">Fetch</a><br/>
-    <a href="" @click.prevent="fetchSecureResource">Fetch Secure Resource</a>
-    <h4>Results</h4>
-    <p v-for="r in resources" :key="r.timestamp">
-      Server Timestamp: {{r.timestamp | formatTimestamp }}
-    </p>
-    <p>{{error}}</p>
-  </div>
+  <b-container>
+    <h1>HOI</h1>
+  </b-container>
 </template>
 
 <script>
@@ -17,12 +9,8 @@
 import $backend from '../backend'
 
 export default {
-  name: 'about',
-  data () {
-    return {
-      resources: [],
-      error: ''
-    }
+  name: 'Home',
+  components: {
   },
   methods: {
     fetchResource () {
@@ -43,8 +31,12 @@ export default {
     }
   }
 }
-
 </script>
 
-<style lang="scss">
+<style>
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 </style>

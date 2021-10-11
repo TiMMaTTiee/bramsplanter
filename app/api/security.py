@@ -10,7 +10,9 @@ def require_auth(func):
     def wrapper(*args, **kwargs):
         # Verify if User is Authenticated
         # Authentication logic goes here
-        if request.headers.get('authorization'):
+        print('Add auth logix')
+        print(request)
+        if request.headers.get('auth'):
             return func(*args, **kwargs)
         else:
             return abort(401)

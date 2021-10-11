@@ -4,17 +4,25 @@ http://flask-restplus.readthedocs.io
 """
 
 from datetime import datetime
-from flask import request
+from flask import jsonify, request
 from flask_restx import Resource
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_httpauth import HTTPBasicAuth
 
 from .security import require_auth
 from . import api_rest
 
+# auth
+auth = HTTPBasicAuth()
 
 class SecureResource(Resource):
     """ Calls require_auth decorator on all requests """
     method_decorators = [require_auth]
 
+@api_rest.route('/verify_user')
+class VerifyUser(SecureResource):
+    def get():
+        return jsonify({'data':'result'})
 
 @api_rest.route('/resource/<string:resource_id>')
 class ResourceOne(Resource):
