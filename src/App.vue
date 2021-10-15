@@ -65,51 +65,52 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  #app {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: rgb(241, 241, 241);
+  }
 
-body {
-  background-color: rgb(243, 243, 243);
-}
+  body {
+    background-color: rgb(209, 209, 209);
+  }
 
-.container {
-  max-width:70%;
-}
+  .container {
+    max-width:70%;
+  }
 
-/* Header & navbar */
-#navbar {
-  margin-bottom: 2rem;
-  background-color: #00335f !important;
-}
-.nav-item.nav-item.nav-item a {
-  color: whitesmoke;
-}
-.nav-item.nav-item.nav-item ul {
-  background-color: #3d4348;
-}
-.nav-item.nav-item.nav-item a {
-  color: whitesmoke;
-}
-.nav-item.nav-item.nav-item ul {
-  background-color: #3d4348;
-}
-.header {
-  background-color: #ffffff;
-  padding-left: 20rem;
-}
-.panel {
-  background-color:white;
-  padding:2rem;
-  margin:1rem;
-}
-.scroll-container {
-  max-height: 50vh;
-  height: auto;
-  overflow-y: scroll;
-  margin-top: 1rem;
-}
+  /* Header & navbar */
+  #navbar {
+    margin-bottom: 2rem;
+    background-color: #00335f !important;
+  }
+  .nav-item.nav-item.nav-item a {
+    color: whitesmoke;
+  }
+  .nav-item.nav-item.nav-item ul {
+    background-color: #3d4348;
+  }
+  .nav-item.nav-item.nav-item a {
+    color: whitesmoke;
+  }
+  .nav-item.nav-item.nav-item ul {
+    background-color: #3d4348;
+  }
+  .header {
+    background-color: #ffffff;
+    padding-left: 20rem;
+  }
+  .panel {
+    background-color:white;
+    padding:2rem;
+    margin:1rem;
+  }
+  .scroll-container {
+    max-height: 50vh;
+    height: auto;
+    overflow-y: scroll;
+    margin-top: 1rem;
+  }
 
 </style>

@@ -1,6 +1,30 @@
 <template>
   <b-container>
-    <h1>Hi {{ $store.state.auth.user.name }}</h1>
+    <b-row class="panel">
+      <b-col style="margin:0rem 1rem 0rem 0rem;">
+        <h1>Hi {{ $store.state.auth.user.name }}</h1>
+      </b-col>
+      <b-col>
+        <b-carousel
+          id="carousel-1"
+          v-model="slide"
+          :interval="0"
+          controls
+          indicators
+          background="rgb(221, 221, 221)"
+          img-width="10"
+          img-height="2"
+        >
+          <b-carousel-slide v-for="plot in plots" :key=plot.id :caption=plot.name img-blank>
+          </b-carousel-slide>
+        </b-carousel>
+      </b-col>
+    </b-row>
+    <b-row class="panel">
+      <PlotView/>
+    </b-row>
+    <b-row>
+    </b-row>
   </b-container>
 </template>
 
@@ -8,14 +32,21 @@
 
 import { mapState, mapActions } from 'vuex'
 import moment from 'moment'
+import PlotView from './Plot.vue'
 export default {
   name: 'Home',
   data () {
     return {
-      userName: 'null'
+      userName: 'null',
+      plots: [
+        {name: 'plot1', id: 1},
+        {name: 'plot2', id: 2},
+        {name: 'plot3', id: 3}
+      ]
     }
   },
   components: {
+    PlotView
   },
   computed: {
     ...mapState({
