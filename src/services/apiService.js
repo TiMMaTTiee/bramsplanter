@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-var baseUrl = 'http://localhost:5000/api'
+var baseUrl = '/api'
 /* eslint-disable */
 export default {
     async apiRequest(path, args) {
