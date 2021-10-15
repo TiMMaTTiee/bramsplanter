@@ -10,6 +10,9 @@ python-dotenv = "*"
 flask = "*"
 flask-sqlalchemy = "*"
 Flask-HTTPAuth = "==4.1.0"
+flask-migrate = "*"
+mysqlclient = "*"
+py-bcrypt = "*"
 
 [dev-packages]
 pytest = "*"

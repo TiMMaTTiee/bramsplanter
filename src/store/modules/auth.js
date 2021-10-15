@@ -1,4 +1,4 @@
-import authService from '../../services/authService'
+import apiService from '../../services/apiService'
 
 /* eslint-disable */
 const state = {
@@ -16,19 +16,13 @@ const getters = {
 }
 
 const actions = {
-  authenticate ({commit}, credentials) {
-    if (credentials) {
-      const {username, password} = credentials;
-      return authService.verifyUser({username, password})
-      .then(auth => {
-        console.log('response' + auth.data)
-        commit('setUser', {user:{name:username, password:password, isAuthenticated:true}})
-      })
-      .catch((error) => {
-        // eslint-disable-next-line
-        console.error(error)
-      });
-    } 
+  async authenticate ({commit}, {args}) {
+    var path = 'verify_user'
+    var result = await apiService.apiRequest(path, args)
+    console.log('response' + result.data)
+    console.log('request' + args)
+
+    commit('setUser', {user:{name:args.username, password:args.password, isAuthenticated:true}})
   },
   logout ({commit}) {
     commit('setUser', {user:{name:null, password:null, isAuthenticated:false}})

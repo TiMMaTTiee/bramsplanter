@@ -60,7 +60,7 @@ export default {
       'authenticate', 'toggleModal'
     ]),
     onSubmit() {
-      this.authenticate({username: this.username, password: this.password})
+      this.authenticate({args:[this.username, this.password]})
       .then(() => {
         this.toggleModal()
         // this.$router.push({name: 'home'})
