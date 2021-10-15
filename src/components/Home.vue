@@ -1,33 +1,37 @@
 <template>
   <b-container>
-    <h1>HOI</h1>
+    <h1>Hi {{ $store.state.auth.user.name }}</h1>
   </b-container>
 </template>
 
 <script>
 
-import $backend from '../backend'
-
+import { mapState, mapActions } from 'vuex'
+import moment from 'moment'
 export default {
   name: 'Home',
+  data () {
+    return {
+      userName: 'null'
+    }
+  },
   components: {
   },
+  computed: {
+    ...mapState({
+      currentUser: state => state.auth.user
+    }),
+    timeAgo (time) {
+      return (moment(time).fromNow())
+    }
+  },
   methods: {
-    fetchResource () {
-      $backend.fetchResource()
-        .then(responseData => {
-          this.resources.push(responseData)
-        }).catch(error => {
-          this.error = error.message
-        })
-    },
-    fetchSecureResource () {
-      $backend.fetchSecureResource()
-        .then(responseData => {
-          this.resources.push(responseData)
-        }).catch(error => {
-          this.error = error.message
-        })
+    ...mapActions('auth', ['user'])
+  },
+  watch: {
+    currentUser (user) {
+      console.log('New user: ', user.name)
+      this.userName = user.name
     }
   }
 }

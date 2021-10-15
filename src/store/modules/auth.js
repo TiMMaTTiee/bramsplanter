@@ -21,8 +21,9 @@ const actions = {
     var result = await apiService.apiRequest(path, args)
     console.log('response' + result.data)
     console.log('request' + args)
+    console.log('request ' + args[0])
 
-    commit('setUser', {user:{name:args.username, password:args.password, isAuthenticated:true}})
+    commit('setUser', {user:{name:args[0], password:'secret', isAuthenticated:true}})
   },
   logout ({commit}) {
     commit('setUser', {user:{name:null, password:null, isAuthenticated:false}})

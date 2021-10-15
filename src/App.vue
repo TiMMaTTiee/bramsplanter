@@ -12,7 +12,7 @@
           <b-link
             v-if="$store.state.auth.user.isAuthenticated"
             v-on:click="onClickLogout"
-          >Logout {{ this.$store.state.auth.user.name}}</b-link>
+          >Logout {{ $store.state.auth.user.name}}</b-link>
         </b-nav-item>
       </b-navbar-nav>
     </b-navbar>
