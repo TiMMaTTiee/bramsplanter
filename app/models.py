@@ -21,7 +21,25 @@ class Plots(Base):
     __tablename__ = 'plots'
 
     id = Column(Integer, primary_key=True)
-    user_id = Column(ForeignKey('users.id'), index=True)
+    users_id = Column(ForeignKey('users.id'), index=True)
     name = Column(String(45))
-    user = relationship('Users')
+    users = relationship('Users')
     
+class Sensors(Base):
+    __tablename__ = 'sensors'
+
+    id = Column(Integer, primary_key=True)
+    type = Column(Integer)
+    plots_id = Column(ForeignKey('plots.id'), index=True)
+    name = Column(String(45))
+    plots = relationship('Plots')
+
+class SensorData(Base):
+    __tablename__ = 'sensor_data'
+
+    id = Column(Integer, primary_key=True)
+    value = Column(Integer)
+    timestamp = Column(DateTime)
+    sensors_id = Column(ForeignKey('sensors.id'), index=True)
+    name = Column(String(45))
+    sensors = relationship('Sensors')

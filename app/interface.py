@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 import os
 from functools import wraps
 
-from app.models import Users, Base
+from app.models import Users, Plots, Sensors, SensorData, Base
 from datetime import datetime
 import logging
 import uuid

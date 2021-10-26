@@ -16,7 +16,7 @@ app.register_blueprint(api_bp)
 
 from .config import Config
 app.logger.info('>>> {}'.format(Config.FLASK_ENV))
-
+Config.SQLALCHEMY_DATABASE_URI=os.environ.get("DATABASE_URL")
 db = SQLAlchemy()
 migrate = Migrate()
 
