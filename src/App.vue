@@ -1,18 +1,19 @@
 <template>
   <div id="app">
     <!-- NavBar -->
-    <b-navbar id="navbar" sticky type="dark" variant="dark" >
+    <b-navbar id="navbar" sticky type="dark" variant="dark">
       <b-img height="50rem" :src="getImgUrl(logoImage)"></b-img>
       <b-navbar-nav>
         <b-nav-item :to="{ name: 'home' }">Home</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto navbar-right">
-        <b-nav-item >
+        <b-nav-item>
           <Login v-if="!$store.state.auth.user.isAuthenticated">Login</Login>
           <b-link
             v-if="$store.state.auth.user.isAuthenticated"
             v-on:click="onClickLogout"
-          >Logout {{ $store.state.auth.user.name}}</b-link>
+            >Logout {{ $store.state.auth.user.name }}</b-link
+          >
         </b-nav-item>
       </b-navbar-nav>
     </b-navbar>
@@ -33,11 +34,11 @@ export default {
   name: 'app',
   components: {
     Home,
-    Login
+    Login,
   },
-  data () {
+  data() {
     return {
-      logoImage: 'logo.png'
+      logoImage: 'logo.png',
     }
   },
   methods: {
@@ -50,67 +51,69 @@ export default {
       this.returnHome()
     },
     getImgUrl(pic) {
-      return require("./assets/" + pic);
-    }
+      return require('./assets/' + pic)
+    },
   },
   created() {
     this.authenticate()
   },
-  watch: { 
-  },
+  watch: {},
   computed: mapState({
-    isAuthenticated: state => state.auth.user.isAuthenticated,
-  })
+    isAuthenticated: (state) => state.auth.user.isAuthenticated,
+  }),
 }
 </script>
 
 <style>
-  #app {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    background-color: rgb(241, 241, 241);
-  }
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: rgb(241, 241, 241);
+}
 
-  body {
-    background-color: rgb(209, 209, 209);
-  }
+body {
+  background-color: rgb(209, 209, 209);
+}
 
-  .container {
-    max-width:70%;
-  }
+.container,
+.container-sm,
+.container-md,
+.container-lg {
+  max-width: 100%;
+  min-width: 80%;
+}
 
-  /* Header & navbar */
-  #navbar {
-    margin-bottom: 2rem;
-    background-color: #00335f !important;
-  }
-  .nav-item.nav-item.nav-item a {
-    color: whitesmoke;
-  }
-  .nav-item.nav-item.nav-item ul {
-    background-color: #3d4348;
-  }
-  .nav-item.nav-item.nav-item a {
-    color: whitesmoke;
-  }
-  .nav-item.nav-item.nav-item ul {
-    background-color: #3d4348;
-  }
-  .header {
-    background-color: #ffffff;
-    padding-left: 20rem;
-  }
-  .panel {
-    background-color:white;
-    padding:2rem;
-    margin:1rem;
-  }
-  .scroll-container {
-    max-height: 50vh;
-    height: auto;
-    overflow-y: scroll;
-    margin-top: 1rem;
-  }
-
+/* Header & navbar */
+#navbar {
+  margin-bottom: 2rem;
+  background-color: #00335f !important;
+}
+.nav-item.nav-item.nav-item a {
+  color: whitesmoke;
+}
+.nav-item.nav-item.nav-item ul {
+  background-color: #3d4348;
+}
+.nav-item.nav-item.nav-item a {
+  color: whitesmoke;
+}
+.nav-item.nav-item.nav-item ul {
+  background-color: #3d4348;
+}
+.header {
+  background-color: #ffffff;
+  padding-left: 20rem;
+}
+.panel {
+  background-color: white;
+  padding: 2rem;
+  margin: 1rem;
+}
+.scroll-container {
+  max-height: 50vh;
+  height: auto;
+  overflow-y: scroll;
+  margin-top: 1rem;
+}
 </style>

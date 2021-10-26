@@ -19,6 +19,8 @@ Vue.use(HighchartsVue)
 
 Vue.use(BootstrapVue)
 
+Vue.config.devtools = true
+
 Vue.config.productionTip = false
 
 new Vue({

@@ -10,6 +10,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_httpauth import HTTPBasicAuth
 from functools import wraps
 from utils.utils import check_password, get_hashed_password
+from collections import Counter
 
 from app.interface import DatabaseInterface
 from . import api_rest
@@ -19,6 +20,7 @@ dbi = DatabaseInterface()
 
 # auth
 auth = HTTPBasicAuth()
+
 
 def require_auth(func):
     """ Secure method decorator """
@@ -33,31 +35,49 @@ def require_auth(func):
             return abort(401)
     return wrapper
 
+
 class SecureResource(Resource):
     """ Calls require_auth decorator on all requests """
     method_decorators = [require_auth]
+
 
 @api_rest.route('/verify_user/<string:username>/<string:password>')
 class VerifyUser(Resource):
     def get(self, username, password):
         user = dbi.get_user(username)
         if check_password(password, user.password):
-            return jsonify({'data':'approved'})
+            return jsonify({'data': 'approved'})
         else:
             print('Wrong password')
             return {'data': 'invalid password'}, 400
 
-@api_rest.route('/resource/<string:resource_id>')
-class ResourceOne(Resource):
+
+@api_rest.route('/moist_data/<int:user_id>/<string:time_type>/<int:time_count>')
+class MoistData(Resource):
     """ Unsecure Resource Class: Inherit from Resource """
 
-    def get(self, resource_id):
-        timestamp = datetime.utcnow().isoformat()
-        return {'timestamp': timestamp}
+    def get(self, user_id, time_type, time_count):
+        try:
+            moist_data = []
+            moist_return_data = []
 
-    def post(self, resource_id):
-        json_payload = request.json
-        return {'timestamp': json_payload}, 201
+            if time_type == 'hour':
+                moist_data = dbi.get_moist_on_hour(user_id, time_count)
+
+            elif time_type == 'day':
+                moist_data = dbi.get_moist_on_day(user_id, time_count)
+            elif time_type == 'week':
+                moist_data = dbi.get_moist_on_week(user_id, time_count)
+            else:
+                raise Exception("Invalid time type: %s", time_type)
+            for moist in moist_data:
+                moist_dict = {'timestamp': moist.timestamp,
+                              'value': moist.value}
+                moist_return_data.append(moist_dict)
+            moist_return_dict = {'data': moist_return_data}
+            return jsonify(moist_return_dict)
+        except Exception as e:
+            print(e)
 
 
 @api_rest.route('/secure-resource/<string:resource_id>')
