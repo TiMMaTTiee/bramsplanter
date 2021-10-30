@@ -41,6 +41,16 @@ class SecureResource(Resource):
     method_decorators = [require_auth]
 
 
+@api_rest.route('/sensor-update')
+class SensorUpdate(Resource):
+    def post(self):
+        print(request.args.get('api_key'))
+        print(request.args.get('type'))
+        print(request.args.get('value'))
+        print(request.args.get('bullshit'))
+        return '', 200
+
+
 @api_rest.route('/verify_user/<string:username>/<string:password>')
 class VerifyUser(Resource):
     def get(self, username, password):

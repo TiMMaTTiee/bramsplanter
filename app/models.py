@@ -25,6 +25,7 @@ class Plots(Base):
     id = Column(Integer, primary_key=True)
     users_id = Column(Integer)
     name = Column(String(45))
+    api_key = Column(String(255))
 
 
 class Sensors(Base):
