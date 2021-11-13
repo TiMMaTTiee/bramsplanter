@@ -1,11 +1,14 @@
 <template>
   <b-row class="panel">
-    <b-col cols="12">
+    <b-col cols="8">
       <highcharts
         class="bar"
         :options="chartOptions"
         :updateArgs="updateArgs"
       ></highcharts>
+    </b-col>
+    <b-col cols="4">
+      {{ cellData }}
     </b-col>
   </b-row>
 </template>
@@ -53,10 +56,11 @@ export default {
           name: 'Plot 3',
         },
       ],
+      cellData: null,
     }
   },
   methods: {
-    ...mapActions('data', ['getMoist']),
+    ...mapActions('data', ['getMoist', 'getCells']),
     setAxisValues() {
       this.xAxisValues = []
 
@@ -105,6 +109,7 @@ export default {
   computed: {
     ...mapState({
       currentMoist: (state) => state.data.moist,
+      currentCells: (state) => state.data.cells,
       currentTimeType: (state) => state.data.timeType,
       currentTimeCount: (state) => state.data.timeCount,
     }),
@@ -146,15 +151,20 @@ export default {
     },
   },
   created() {
-    this.getMoist({ args: [1, this.timeType, this.timeCount] })
+    // this.getMoist({ args: [1, this.timeType, this.timeCount] })
+    this.getCells({ args: [1] })
     this.intervalId = setInterval(() => {
-      this.getMoist({ args: [1, this.timeType, this.timeCount] })
+      // this.getMoist({ args: [1, this.timeType, this.timeCount] })
+      this.getCells({ args: [1] })
     }, 10000)
   },
   beforeDestroy() {
     clearInterval(this.intervalId)
   },
   watch: {
+    currentCells(values) {
+      this.cellData = values
+    },
     currentMoist(count) {
       // Create an array of dictionaries to enter as new data
       var series = []

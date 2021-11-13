@@ -44,3 +44,33 @@ class SensorData(Base):
     value = Column(Integer)
     timestamp = Column(DateTime)
     sensors_id = Column(Integer)
+
+
+class EspSettings(Base):
+    __tablename__ = 'esp_settings'
+
+    id = Column(Integer, primary_key=True)
+    plots_id = Column(Integer)
+    manual_trigger = Column(Integer)
+    manual_amount = Column(Integer)
+    manual_trigger_2 = Column(Integer)
+    manual_amount_2 = Column(Integer)
+
+
+'''
+1=soil_moist1
+2=soil_moist2
+3=soil_temp1
+4=soil_temp2
+5=Cell1
+6=Cell2
+7=Cell3
+8=air_moist1
+9=air_temp1
+10=SOLAR_bool
+11=air_moist2
+12=air_temp2
+13=lux
+14=flow_rate
+15=Cell_total
+'''

@@ -21,7 +21,8 @@ def add_moist_data(id, value, a):
 # add_user('Admin', '321TimenBram@@')
 # add_user('Tim', 'Qwerty-8-8')
 # id = 1
-values = [45, 35, 42, 54, 64, 42, 43, 36, 42, 35, 43, 26, 25, 32, 52, 43]
+# values = [45, 35, 42, 54, 64, 42, 43, 36, 42, 35, 43, 26, 25, 32, 52, 43]
 
-for id, value in enumerate(values):
-    add_moist_data(1, value, id)
+# for id, value in enumerate(values):
+#     add_moist_data(1, value, id)
+print(get_hashed_password('321TimenBram@@'))
