@@ -109,20 +109,19 @@ class CellData(Resource):
 
     def get(self, user_id):
         try:
-            print(user_id)
             plot_id = dbi.get_plot(user_id)
             sensor1 = dbi.get_sensor(plot_id, 5)
             sensor2 = dbi.get_sensor(plot_id, 6)
             sensor3 = dbi.get_sensor(plot_id, 7)
             moist_return_data = []
 
-            moist_dict = {'cell1': dbi.get_latest_cell_data(sensor1.id)}
+            moist_dict = {'cell1': dbi.get_latest_cell_data(sensor1)}
             moist_return_data.append(moist_dict)
 
-            moist_dict = {'cell2': dbi.get_latest_cell_data(sensor2.id)}
+            moist_dict = {'cell2': dbi.get_latest_cell_data(sensor2)}
             moist_return_data.append(moist_dict)
 
-            moist_dict = {'cell3': dbi.get_latest_cell_data(sensor3.id)}
+            moist_dict = {'cell3': dbi.get_latest_cell_data(sensor3)}
             moist_return_data.append(moist_dict)
 
             moist_return_dict = {'data': moist_return_data}

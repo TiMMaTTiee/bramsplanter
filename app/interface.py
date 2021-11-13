@@ -68,8 +68,8 @@ class DatabaseInterface():
     def get_sensor(self, _plot_id, _type):
         try:
             sensor = self.session.query(Sensors).filter_by(
-                plots_id=_plot_id, sensor_type=_type).first()
-            return sensor
+                sensor_type=_type).first()
+            return sensor.id
         except exc.SQLAlchemyError as ex:
             self.session.rollback()
             logger.error(ex)
@@ -121,7 +121,7 @@ class DatabaseInterface():
     def get_latest_cell_data(self, sensor_id):
         try:
             last_cell = self.session.query(SensorData).order_by(
-                SensorData.timestamp).filter(SensorData.sensors_id == sensor_id).first()
+                SensorData.timestamp.desc()).filter(SensorData.sensors_id == sensor_id).first()
             return last_cell.value
         except exc.SQLAlchemyError as ex:
             logging.error(ex)
@@ -137,7 +137,6 @@ class DatabaseInterface():
                                                           SensorData.timestamp >= target_hour_min,
                                                           SensorData.timestamp <= target_hour_max).all()
             for moists in moist:
-                print(moists.timestamp)
                 print(moists.value)
             return moist
         except exc.SQLAlchemyError as ex:
