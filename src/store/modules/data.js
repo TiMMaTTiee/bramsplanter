@@ -5,6 +5,7 @@ const state = {
   temp: null,
   moist: null,
   cells: null,
+  recent: null,
   timeType: 'hour',
   timeCount: 5
 }
@@ -18,6 +19,9 @@ const getters = {
   },
   cells: state => {
     return state.cells
+  },
+  recent: state => {
+    return state.recent
   },
   timeType: state => {
     return state.timeType
@@ -43,6 +47,11 @@ const actions = {
     var result = await apiService.apiRequest(path, args)
     commit('setCells', result.data)
   },
+  async getRecent({ commit }, { args }) {
+    var path = 'recent_data'
+    var result = await apiService.apiRequest(path, args)
+    commit('setRecent', result.data)
+  },
   setTimeType({ commit }, timeType) {
     commit('newTimeType', timeType)
   },
@@ -60,6 +69,9 @@ const mutations = {
   },
   setCells(state, value) {
     state.cells = value
+  },
+  setRecent(state, value) {
+    state.recent = value
   },
   newTimeType(state, value) {
     state.timeType = value

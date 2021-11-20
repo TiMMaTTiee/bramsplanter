@@ -21,7 +21,7 @@
       </b-row>
     </b-col>
     <b-col>
-      <MoistView />
+      <RecentDataView />
     </b-col>
   </b-row>
 </template>
@@ -29,27 +29,29 @@
 <script>
 /* eslint-disable */
 /* eslint-disable no-console */
-import { mapState, mapActions } from "vuex";
-import MoistView from "./Moist.vue";
+import { mapState, mapActions } from 'vuex'
+import MoistView from './Moist.vue'
+import RecentDataView from './RecentData.vue'
 
 export default {
-  name: "PlotView",
+  name: 'PlotView',
   data() {
     return {
-      timeTypes: ["hour", "day", "week"],
+      timeTypes: ['hour', 'day', 'week'],
       timeType: 0,
       timeCount: 5,
-    };
+    }
   },
   components: {
     MoistView,
+    RecentDataView,
   },
   methods: {
-    ...mapActions("data", ["setTimeCount", "setTimeType"]),
+    ...mapActions('data', ['setTimeCount', 'setTimeType']),
     newTimeCount(delta) {
       if (this.timeCount + delta > 0) {
-        this.timeCount += delta;
-        this.setTimeCount(this.timeCount);
+        this.timeCount += delta
+        this.setTimeCount(this.timeCount)
       }
     },
     newTimeType(delta) {
@@ -57,8 +59,8 @@ export default {
         this.timeType + delta > -1 &&
         this.timeType + delta < this.timeTypes.length
       ) {
-        this.timeType += delta;
-        this.setTimeType(this.timeTypes[this.timeType]);
+        this.timeType += delta
+        this.setTimeType(this.timeTypes[this.timeType])
       }
     },
   },
@@ -67,7 +69,7 @@ export default {
   created() {},
   beforeDestroy() {},
   watch: {},
-};
+}
 </script>
 
 <!-- Add 'scoped' attribute to limit CSS to this component only -->

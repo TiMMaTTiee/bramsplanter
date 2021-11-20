@@ -2,7 +2,7 @@ import apiService from '../../services/apiService'
 
 /* eslint-disable */
 const state = {
-  user: {name:null, password:null, isAuthenticated:false},
+  user: { name: null, password: null, isAuthenticated: false, uuid: null },
   isModalOpen: false,
 }
 
@@ -16,26 +16,26 @@ const getters = {
 }
 
 const actions = {
-  async authenticate ({commit}, {args}) {
+  async authenticate({ commit }, { args }) {
     var path = 'verify_user'
     var result = await apiService.apiRequest(path, args)
-    console.log('response' + result.data)
+    console.log('response' + result.data.uuid)
     console.log('request' + args)
     console.log('request ' + args[0])
 
-    commit('setUser', {user:{name:args[0], password:'secret', isAuthenticated:true}})
+    commit('setUser', { user: { name: args[0], password: 'secret', isAuthenticated: true, uuid: result.data.uuid } })
   },
-  logout ({commit}) {
-    commit('setUser', {user:{name:null, password:null, isAuthenticated:false}})
+  logout({ commit }) {
+    commit('setUser', { user: { name: null, password: null, isAuthenticated: false, uuid: null } })
     commit('toggleModal')
   },
-  toggleModal ({commit}) {
+  toggleModal({ commit }) {
     commit('toggleModal')
   }
 }
 
 const mutations = {
-  setUser(state, {user}) {
+  setUser(state, { user }) {
     state.user = user
   },
   toggleModal(state) {

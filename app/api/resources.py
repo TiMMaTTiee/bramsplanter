@@ -69,7 +69,7 @@ class VerifyUser(Resource):
     def get(self, username, password):
         user = dbi.get_user(username)
         if check_password(password, user.password):
-            return jsonify({'data': 'approved'})
+            return jsonify({'data': 'approved', 'uuid': user.uuid})
         else:
             print('Wrong password')
             return {'data': 'invalid password'}, 400
@@ -103,13 +103,13 @@ class MoistData(Resource):
             print(e)
 
 
-@api_rest.route('/cell_data/<int:user_id>')
+@api_rest.route('/cell_data/<string:user_uuid>')
 class CellData(Resource):
     """ Unsecure Resource Class: Inherit from Resource """
 
-    def get(self, user_id):
+    def get(self, user_uuid):
         try:
-            plot_id = dbi.get_plot(user_id)
+            plot_id = dbi.get_plot_uuid(user_uuid)
             sensor1 = dbi.get_sensor(plot_id, 5)
             sensor2 = dbi.get_sensor(plot_id, 6)
             sensor3 = dbi.get_sensor(plot_id, 7)
@@ -126,6 +126,24 @@ class CellData(Resource):
 
             moist_return_dict = {'data': moist_return_data}
             return jsonify(moist_return_dict)
+        except Exception as e:
+            print(e)
+
+
+@api_rest.route('/recent_data/<string:user_uuid>')
+class RecentData(Resource):
+    """ Unsecure Resource Class: Inherit from Resource """
+
+    def get(self, user_uuid):
+        try:
+            sensor_return_data = {}
+            plot_id = dbi.get_plot_uuid(user_uuid)
+            sensors = dbi.get_sensor_plot(plot_id)
+            for sensor in sensors:
+                sensor_return_data[sensor.name] = dbi.get_latest_cell_data(
+                    sensor.id)
+            sensor_return_dict = {'data': sensor_return_data}
+            return jsonify(sensor_return_dict)
         except Exception as e:
             print(e)
 

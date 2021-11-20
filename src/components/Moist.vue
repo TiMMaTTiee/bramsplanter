@@ -152,10 +152,10 @@ export default {
   },
   created() {
     // this.getMoist({ args: [1, this.timeType, this.timeCount] })
-    this.getCells({ args: [1] })
+    this.getCells({ args: [this.$store.state.auth.user.uuid] })
     this.intervalId = setInterval(() => {
       // this.getMoist({ args: [1, this.timeType, this.timeCount] })
-      this.getCells({ args: [1] })
+      this.getCells({ args: [this.$store.state.auth.user.uuid] })
     }, 10000)
   },
   beforeDestroy() {

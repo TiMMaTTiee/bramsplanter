@@ -48,7 +48,15 @@ class DatabaseInterface():
     def get_user(self, _name):
         try:
             user = self.session.query(Users).filter_by(name=_name).first()
+            return user
+        except exc.SQLAlchemyError as ex:
+            self.session.rollback()
+            logger.error(ex)
+            return False
 
+    def get_user_uuid(self, _uuid):
+        try:
+            user = self.session.query(Users).filter_by(uuid=_uuid).first()
             return user
         except exc.SQLAlchemyError as ex:
             self.session.rollback()
@@ -65,11 +73,33 @@ class DatabaseInterface():
             logger.error(ex)
             return False
 
+    def get_plot_uuid(self, _user_uuid):
+        try:
+            _user_id = self.get_user_uuid(_user_uuid).id
+            plot = self.session.query(Plots).filter_by(
+                users_id=_user_id).first()
+            return plot.id
+        except exc.SQLAlchemyError as ex:
+            self.session.rollback()
+            logger.error(ex)
+            print(ex)
+            return False
+
     def get_sensor(self, _plot_id, _type):
         try:
             sensor = self.session.query(Sensors).filter_by(
                 sensor_type=_type).first()
             return sensor.id
+        except exc.SQLAlchemyError as ex:
+            self.session.rollback()
+            logger.error(ex)
+            return False
+
+    def get_sensor_plot(self, _plot_id):
+        try:
+            sensors = self.session.query(Sensors).filter_by(
+                plots_id=_plot_id).all()
+            return sensors
         except exc.SQLAlchemyError as ex:
             self.session.rollback()
             logger.error(ex)

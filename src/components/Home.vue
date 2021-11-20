@@ -26,6 +26,9 @@
       </b-col>
     </b-row>
     <b-row class="panel">
+      <RecentDataView />
+    </b-row>
+    <b-row class="panel">
       <PlotView />
     </b-row>
     <b-row> </b-row>
@@ -36,6 +39,8 @@
 import { mapState, mapActions } from 'vuex'
 import moment from 'moment'
 import PlotView from './Plot.vue'
+import RecentDataView from './RecentData.vue'
+
 export default {
   name: 'Home',
   data () {
@@ -49,7 +54,8 @@ export default {
     }
   },
   components: {
-    PlotView
+    PlotView,
+    RecentDataView
   },
   computed: {
     ...mapState({
