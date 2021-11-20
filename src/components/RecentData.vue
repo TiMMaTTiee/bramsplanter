@@ -2,7 +2,10 @@
   <b-row class="panel">
     <b-col cols="12">
       <li v-for="(value, name) in recentData" v-bind:key="value.id">
-        {{ name }}: {{ Math.round(value * 0.1875 * 0.001 * 100) / 100 }} V
+        <div v-if="name == 'Cell 1' || name == 'Cell 2' || name == 'Cell 3'">
+          {{ name }}: {{ Math.round(value * 0.1875 * 0.001 * 100) / 100 }} V
+        </div>
+        <div v-else>{{ name }}: {{ value }}</div>
       </li>
     </b-col>
   </b-row>
