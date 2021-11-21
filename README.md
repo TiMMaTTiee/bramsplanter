@@ -1,8 +1,31 @@
 # bramsplanter
 Webapp for Bram's planter
 
+## Installation docker
 
-## Installation
+##### Before you start
+
+Before getting started, you should have the following installed and running:
+
+- [X] Docker
+- [X] Visual Studio Code
+- [X] VSCode plugins: docker, remote - containers
+
+##### Start local app
+
+When opening the project, you should get a pop-up asking to reopen in container, choose yes. Alternatively, click the green icon in the bottom left, or `ctrl + shift + p` and choose to reopen in container.
+
+In first terminal:
+```
+flask run
+```
+
+In second terminal:
+```
+npm run serve
+```
+
+## Installation local
 
 ##### Before you start
 
