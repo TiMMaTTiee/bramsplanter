@@ -21,7 +21,7 @@
       </b-row>
     </b-col>
     <b-col>
-      <RecentDataView />
+      <MoistView />
     </b-col>
   </b-row>
 </template>

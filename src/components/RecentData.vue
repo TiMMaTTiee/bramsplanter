@@ -5,7 +5,10 @@
         <div v-if="name == 'Cell 1' || name == 'Cell 2' || name == 'Cell 3'">
           {{ name }}: {{ Math.round(value * 0.1875 * 0.001 * 100) / 100 }} V
         </div>
-        <div v-else>{{ name }}: {{ value }}</div>
+        <div v-else-if="name == 'soil_temp1' || name == 'Air Temperature 1' || name == 'soil_temp2'">
+          {{ name }}: {{value}} C
+        </div>
+        <div v-else>{{ name }}: {{ value }} %</div>
       </li>
     </b-col>
   </b-row>
