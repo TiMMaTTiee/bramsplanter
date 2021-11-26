@@ -72,11 +72,11 @@ class SensorData(Base):
            'cell3': self.cell3,
            'air_moist1': self.air_moist1,
            'air_temp1': self.air_temp1,
-           'solar_bool': self.cell1,
-           'air_moist2': self.cell2,
-           'air_temp2': self.cell3,
-           'lux': self.air_moist1,
-           'flow_rate': self.air_temp1
+           'solar_bool': self.solar_bool,
+           'air_moist2': self.air_moist2,
+           'air_temp2': self.air_temp2,
+           'lux': self.lux,
+           'flow_rate': self.flow_rate
        }
 
 

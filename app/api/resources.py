@@ -148,6 +148,20 @@ class RecentData(Resource):
             print(e)
 
 
+@api_rest.route('/all_data/<string:user_uuid>')
+class RecentData(Resource):
+    """ Unsecure Resource Class: Inherit from Resource """
+
+    def get(self, user_uuid):
+        try:
+            plot_id = dbi.get_plot_uuid(user_uuid)
+            sensor_return_data = dbi.get_all_sensor_data(plot_id)
+            sensor_return_dict = {'data': [i.serialize for i in sensor_return_data]}
+            return jsonify(sensor_return_dict)
+        except Exception as e:
+            print(e)
+
+
 @api_rest.route('/recent_image/<string:user_uuid>')
 class RecentImage(Resource):
     """ Unsecure Resource Class: Inherit from Resource """

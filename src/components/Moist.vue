@@ -152,10 +152,12 @@ export default {
   },
   created() {
     // this.getMoist({ args: [1, this.timeType, this.timeCount] })
+    this.getMoist({ args: [this.$store.state.auth.user.uuid] })
     this.getCells({ args: [this.$store.state.auth.user.uuid] })
     this.intervalId = setInterval(() => {
       // this.getMoist({ args: [1, this.timeType, this.timeCount] })
       this.getCells({ args: [this.$store.state.auth.user.uuid] })
+      this.getMoist({ args: [this.$store.state.auth.user.uuid] })
     }, 10000)
   },
   beforeDestroy() {
@@ -166,37 +168,39 @@ export default {
       this.cellData = values
     },
     currentMoist(count) {
+      console.log(count.data)
+      this.series[0] = count.data
       // Create an array of dictionaries to enter as new data
-      var series = []
-      this.series = []
-      count.data.forEach((element) => {
-        for (var key in element) {
-          // check if key already exists
-          var exists = false
-          series.forEach((existingElement) => {
-            if (existingElement[key]) {
-              existingElement[key].push(element[key])
-              exists = true
-            }
-          })
+      // var series = []
+      // this.series = []
+      // count.data.forEach((element) => {
+      //   for (var key in element) {
+      //     // check if key already exists
+      //     var exists = false
+      //     series.forEach((existingElement) => {
+      //       if (existingElement[key]) {
+      //         existingElement[key].push(element[key])
+      //         exists = true
+      //       }
+      //     })
 
-          // if the key does not yet exists, add as new key
-          if (!exists) {
-            var newEntry = { [key]: [element[key]] }
-            series.push(newEntry)
-          }
-        }
-      })
+      //     // if the key does not yet exists, add as new key
+      //     if (!exists) {
+      //       var newEntry = { [key]: [element[key]] }
+      //       series.push(newEntry)
+      //     }
+      //   }
+      // })
 
-      // add data to the chart
-      series.forEach((element) => {
-        for (var key in element) {
-          this.series.push({
-            name: key,
-            data: element[key],
-          })
-        }
-      })
+      // // add data to the chart
+      // series.forEach((element) => {
+      //   for (var key in element) {
+      //     this.series.push({
+      //       name: key,
+      //       data: element[key],
+      //     })
+      //   }
+      // })
       this.setAxisValues()
     },
     currentTimeType(type) {

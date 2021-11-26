@@ -42,7 +42,7 @@ const actions = {
     commit('setTemp', result.data)
   },
   async getMoist({ commit }, { args }) {
-    var path = 'moist_data'
+    var path = 'all_data'
     var result = await apiService.apiRequest(path, args)
     commit('setMoist', result.data)
   },

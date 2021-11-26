@@ -2,14 +2,15 @@
   <b-row class="panel">
     <b-col cols="6">
       <li v-for="(value, name) in recentData" v-bind:key="value.id">
-        <div v-if="name == 'Cell 1' || name == 'Cell 2' || name == 'Cell 3'">
+        <div v-if="name == 'cell1' || name == 'cell2' || name == 'cell3'">
           {{ name }}: {{ Math.round(value * 0.1875 * 0.001 * 100) / 100 }} V
         </div>
         <div
           v-else-if="
             name == 'soil_temp1' ||
-            name == 'Air Temperature 1' ||
-            name == 'soil_temp2'
+            name == 'soil_temp2' ||
+            name == 'air_temp1' ||
+            name == 'air_temp2'
           "
         >
           {{ name }}: {{ value }} C

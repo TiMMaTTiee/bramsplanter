@@ -170,6 +170,16 @@ class DatabaseInterface():
             logging.error(ex)
             return False
 
+    def get_all_sensor_data(self, plot_id):
+        try:
+            all_entries = self.session.query(SensorData).order_by(
+                SensorData.timestamp.desc()).filter(SensorData.plots_id == plot_id).all()
+            return all_entries
+        except exc.SQLAlchemyError as ex:
+            self.session.rollback()
+            logging.error(ex)
+            return False
+
     def get_moist_on_hour(self, user_id, hour):
         try:
             plot_id = self.get_plot(user_id)
