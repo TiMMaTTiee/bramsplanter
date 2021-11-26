@@ -6,6 +6,7 @@ const state = {
   moist: null,
   cells: null,
   recent: null,
+  recentImage: null,
   timeType: 'hour',
   timeCount: 5
 }
@@ -22,6 +23,9 @@ const getters = {
   },
   recent: state => {
     return state.recent
+  },
+  recentImage: state => {
+    return state.recentImage
   },
   timeType: state => {
     return state.timeType
@@ -52,6 +56,11 @@ const actions = {
     var result = await apiService.apiRequest(path, args)
     commit('setRecent', result.data)
   },
+  async getRecentImage({ commit }, { args }) {
+    var path = 'recent_image'
+    var result = await apiService.apiRequest(path, args)
+    commit('setRecentImage', result.data)
+  },
   setTimeType({ commit }, timeType) {
     commit('newTimeType', timeType)
   },
@@ -72,6 +81,9 @@ const mutations = {
   },
   setRecent(state, value) {
     state.recent = value
+  },
+  setRecentImage(state, value) {
+    state.recentImage = value
   },
   newTimeType(state, value) {
     state.timeType = value
