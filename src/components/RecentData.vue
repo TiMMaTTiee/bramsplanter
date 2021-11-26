@@ -1,6 +1,7 @@
 <template>
   <b-row class="panel">
     <b-col cols="6">
+    <h3>Real Time Data</h3>
       <li v-for="(value, name) in recentData" v-bind:key="value.id">
         <div v-if="name == 'cell1' || name == 'cell2' || name == 'cell3'">
           {{ name }}: {{ Math.round(value * 0.1875 * 0.001 * 100) / 100 }} V
@@ -13,13 +14,22 @@
             name == 'air_temp2'
           "
         >
-          {{ name }}: {{ value }} C
+          {{ name }}:
+          <div v-if="checked">
+          {{ value }} C
+          </div>
+          <div v-else>
+          {{ Math.round(value*1.8)+32 }} F
+          </div>
         </div>
         <div v-else>{{ name }}: {{ value }} %</div>
       </li>
     </b-col>
     <b-col cols="6">
-      <img :src="'data:image/png;base64,' + recentImage" />
+    <h3>Settings</h3>
+    <b-form-checkbox v-model="checked" name="check-button" switch>
+      Switch Checkbox <b>(Checked: {{ checked }})</b>
+    </b-form-checkbox>
     </b-col>
   </b-row>
 </template>
@@ -33,6 +43,7 @@ export default {
   name: 'RecentDataView',
   data() {
     return {
+      checked: false,
       recentData: null,
       recentImage: null,
     }
