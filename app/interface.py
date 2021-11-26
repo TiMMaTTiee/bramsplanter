@@ -105,14 +105,11 @@ class DatabaseInterface():
             logger.error(ex)
             return False
 
-    def get_sensor_by_api_key(self, _api_key, _sensor_type):
+    def get_plot_by_api_key(self, _api_key):
         try:
-            sensor_type_id = self.get_sensor_type(_sensor_type)
             plot = self.session.query(Plots).filter_by(
                 api_key=_api_key).first()
-            sensor = self.session.query(Sensors).filter_by(
-                plots_id=plot.id, sensor_type=sensor_type_id).first()
-            return sensor
+            return plot
         except exc.SQLAlchemyError as ex:
             self.session.rollback()
             logger.error(ex)
@@ -136,10 +133,25 @@ class DatabaseInterface():
             'flow_rate': 14
         }.get(x, 0)
 
-    def add_sensor_value(self, sensor_id, _value, _timestamp):
+    def add_sensor_value(self, plot_id, values, _timestamp):
         try:
             new_value = SensorData(
-                sensors_id=sensor_id, value=_value, timestamp=_timestamp)
+                plots_id=plot_id, 
+                soil_moist1=values['soil_moist1'],
+                soil_moist2=values['soil_moist2'],
+                soil_temp1=values['soil_temp1'],
+                soil_temp2=values['soil_temp2'],
+                cell1=values['cell1'],
+                cell2=values['cell2'],
+                cell3=values['cell3'],
+                air_moist1=values['air_moist1'],
+                air_temp1=values['air_temp1'],
+                solar_bool=values['solar_bool'],
+                air_moist2=values['air_moist2'],
+                air_temp2=values['air_temp2'],
+                lux=values['lux'],
+                flow_rate=values['flow_rate'],
+                timestamp=_timestamp)
             self.session.add(new_value)
             self.session.commit()
             return new_value.id
@@ -148,27 +160,28 @@ class DatabaseInterface():
             logger.error(ex)
             return False
 
-    def get_latest_cell_data(self, sensor_id):
+    def get_latest_sensor_data(self, plot_id):
         try:
-            last_cell = self.session.query(SensorData).order_by(
-                SensorData.timestamp.desc()).filter(SensorData.sensors_id == sensor_id).first()
-            return last_cell.value
+            last_entry = self.session.query(SensorData).order_by(
+                SensorData.timestamp.desc()).filter(SensorData.plots_id == plot_id).first()
+            return last_entry
         except exc.SQLAlchemyError as ex:
+            self.session.rollback()
             logging.error(ex)
             return False
 
     def get_moist_on_hour(self, user_id, hour):
         try:
             plot_id = self.get_plot(user_id)
-            sensor = self.get_sensor(plot_id, 1)
             target_hour_max = datetime.utcnow()+timedelta(hours=2)
             target_hour_min = datetime.utcnow()+timedelta(hours=2) - timedelta(hours=hour)
-            moist = self.session.query(SensorData).filter(SensorData.sensors_id == sensor.id,
+            moist = self.session.query(SensorData).filter(SensorData.plots_id == plot_id,
                                                           SensorData.timestamp >= target_hour_min,
                                                           SensorData.timestamp <= target_hour_max).all()
             for moists in moist:
                 print(moists.value)
             return moist
         except exc.SQLAlchemyError as ex:
+            self.session.rollback()
             logging.error(ex)
             return False

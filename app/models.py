@@ -41,9 +41,43 @@ class SensorData(Base):
     __tablename__ = 'sensor_data'
 
     id = Column(Integer, primary_key=True)
-    value = Column(Integer)
+    soil_moist1 = Column(Integer)
+    soil_moist2 = Column(Integer)
+    soil_temp1 = Column(Integer)
+    soil_temp2 = Column(Integer)
+    cell1 = Column(Integer)
+    cell2 = Column(Integer)
+    cell3 = Column(Integer)
+    air_moist1 = Column(Integer)
+    air_temp1 = Column(Integer)
+    solar_bool = Column(Integer)
+    air_moist2 = Column(Integer)
+    air_temp2 = Column(Integer)
+    lux = Column(Integer)
+    flow_rate = Column(Integer)
     timestamp = Column(DateTime)
-    sensors_id = Column(Integer)
+    plots_id = Column(Integer)
+
+    @property
+    def serialize(self):
+       """Return object data in easily serializable format"""
+       return {
+           'timestamp': self.timestamp,
+           'soil_moist1': self.soil_moist1,
+           'soil_moist2': self.soil_moist2,
+           'soil_temp1': self.soil_temp1,
+           'soil_temp2': self.soil_temp2,
+           'cell1': self.cell1,
+           'cell2': self.cell2,
+           'cell3': self.cell3,
+           'air_moist1': self.air_moist1,
+           'air_temp1': self.air_temp1,
+           'solar_bool': self.cell1,
+           'air_moist2': self.cell2,
+           'air_temp2': self.cell3,
+           'lux': self.air_moist1,
+           'flow_rate': self.air_temp1
+       }
 
 
 class EspSettings(Base):
@@ -62,15 +96,14 @@ class EspSettings(Base):
 2=soil_moist2
 3=soil_temp1
 4=soil_temp2
-5=Cell1
-6=Cell2
-7=Cell3
+5=cell1
+6=cell2
+7=cell3
 8=air_moist1
 9=air_temp1
-10=SOLAR_bool
+10=solar_bool
 11=air_moist2
 12=air_temp2
 13=lux
 14=flow_rate
-15=Cell_total
 '''

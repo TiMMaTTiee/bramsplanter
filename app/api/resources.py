@@ -45,13 +45,27 @@ class SecureResource(Resource):
 class SensorUpdate(Resource):
     def post(self):
         api_key = request.args.get('api_key')
-        sensor_type = request.args.get('type')
-        sensor = dbi.get_sensor_by_api_key(api_key, sensor_type)
-        sensor_value = request.args.get('value')
+        plot = dbi.get_plot_by_api_key(api_key)
+        sensor_values = {
+            'soil_moist1': request.args.get('soil_moist1'),
+            'soil_moist2': request.args.get('soil_moist2'),
+            'soil_temp1': request.args.get('soil_temp1'),
+            'soil_temp2': request.args.get('soil_temp2'),
+            'cell1': request.args.get('cell1'),
+            'cell2': request.args.get('cell2'),
+            'cell3': request.args.get('cell3'),
+            'air_moist1': request.args.get('air_moist1'),
+            'air_temp1': request.args.get('air_temp1'),
+            'solar_bool': request.args.get('solar_bool'),
+            'air_moist2': request.args.get('air_moist2'),
+            'air_temp2': request.args.get('air_temp2'),
+            'lux': request.args.get('lux'),
+            'flow_rate': request.args.get('flow_rate')
+        }
 
-        dbi.add_sensor_value(sensor.id, sensor_value, datetime.utcnow())
+        dbi.add_sensor_value(plot.id, sensor_values, datetime.utcnow())
 
-        return '', 200
+        return 'Bedankt voor je data, slet', 200
 
 
 @api_rest.route('/get-settings')
@@ -86,7 +100,6 @@ class MoistData(Resource):
 
             if time_type == 'hour':
                 moist_data = dbi.get_moist_on_hour(user_id, time_count)
-
             elif time_type == 'day':
                 moist_data = dbi.get_moist_on_day(user_id, time_count)
             elif time_type == 'week':
@@ -115,15 +128,6 @@ class CellData(Resource):
             sensor3 = dbi.get_sensor(plot_id, 7)
             moist_return_data = []
 
-            moist_dict = {'cell1': dbi.get_latest_cell_data(sensor1)}
-            moist_return_data.append(moist_dict)
-
-            moist_dict = {'cell2': dbi.get_latest_cell_data(sensor2)}
-            moist_return_data.append(moist_dict)
-
-            moist_dict = {'cell3': dbi.get_latest_cell_data(sensor3)}
-            moist_return_data.append(moist_dict)
-
             moist_return_dict = {'data': moist_return_data}
             return jsonify(moist_return_dict)
         except Exception as e:
@@ -136,13 +140,9 @@ class RecentData(Resource):
 
     def get(self, user_uuid):
         try:
-            sensor_return_data = {}
             plot_id = dbi.get_plot_uuid(user_uuid)
-            sensors = dbi.get_sensor_plot(plot_id)
-            for sensor in sensors:
-                sensor_return_data[sensor.name] = dbi.get_latest_cell_data(
-                    sensor.id)
-            sensor_return_dict = {'data': sensor_return_data}
+            sensor_return_data = dbi.get_latest_sensor_data(plot_id)
+            sensor_return_dict = {'data': sensor_return_data.serialize}
             return jsonify(sensor_return_dict)
         except Exception as e:
             print(e)
