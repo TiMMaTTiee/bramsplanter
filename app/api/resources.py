@@ -63,7 +63,12 @@ class SensorUpdate(Resource):
             'flow_rate': request.args.get('flow_rate')
         }
 
-        dbi.add_sensor_value(plot.id, sensor_values, datetime.utcnow())
+        latest_sensor_data = dbi.get_latest_sensor_data(plot.id)
+
+        if (datetime.utcnow() - timedelta(hours=1)) > latest_sensor_data.timestamp:
+            dbi.add_sensor_value(plot.id, sensor_values, datetime.utcnow())
+        else:
+            dbi.update_sensor_value(latest_sensor_data.id, sensor_values, datetime.utcnow())
 
         return 'Bedankt voor je data, slet', 200
 
@@ -87,51 +92,6 @@ class VerifyUser(Resource):
         else:
             print('Wrong password')
             return {'data': 'invalid password'}, 400
-
-
-@api_rest.route('/moist_data/<int:user_id>/<string:time_type>/<int:time_count>')
-class MoistData(Resource):
-    """ Unsecure Resource Class: Inherit from Resource """
-
-    def get(self, user_id, time_type, time_count):
-        try:
-            moist_data = []
-            moist_return_data = []
-
-            if time_type == 'hour':
-                moist_data = dbi.get_moist_on_hour(user_id, time_count)
-            elif time_type == 'day':
-                moist_data = dbi.get_moist_on_day(user_id, time_count)
-            elif time_type == 'week':
-                moist_data = dbi.get_moist_on_week(user_id, time_count)
-            else:
-                raise Exception("Invalid time type: %s", time_type)
-            for moist in moist_data:
-                moist_dict = {'timestamp': moist.timestamp,
-                              'value': moist.value}
-                moist_return_data.append(moist_dict)
-            moist_return_dict = {'data': moist_return_data}
-            return jsonify(moist_return_dict)
-        except Exception as e:
-            print(e)
-
-
-@api_rest.route('/cell_data/<string:user_uuid>')
-class CellData(Resource):
-    """ Unsecure Resource Class: Inherit from Resource """
-
-    def get(self, user_uuid):
-        try:
-            plot_id = dbi.get_plot_uuid(user_uuid)
-            sensor1 = dbi.get_sensor(plot_id, 5)
-            sensor2 = dbi.get_sensor(plot_id, 6)
-            sensor3 = dbi.get_sensor(plot_id, 7)
-            moist_return_data = []
-
-            moist_return_dict = {'data': moist_return_data}
-            return jsonify(moist_return_dict)
-        except Exception as e:
-            print(e)
 
 
 @api_rest.route('/recent_data/<string:user_uuid>')
@@ -176,19 +136,31 @@ class AllData(Resource):
                 delta_t = timedelta(days=1)
             if time_type == 'week':
                 delta_t = timedelta(weeks=1)
-            print('time ', time_type)
-            for entry in sensor_return_data:
-                if (last_hour_value - delta_t) < entry.timestamp < last_hour_value:
-                    air_temp_1.insert(0, entry.air_temp1)
-                    soil_temp_1.insert(0, entry.soil_temp1)
-                    air_moist_1.insert(0, entry.air_moist1)
-                    soil_moist_1.insert(0, entry.soil_moist1)
-                    cell_1.insert(0, int(entry.cell1 * 0.1875 * 0.001 * 100) / 100)
-                    cell_2.insert(0, int(entry.cell2 * 0.1875 * 0.001 * 100) / 100)
-                    cell_3.insert(0, int(entry.cell3 * 0.1875 * 0.001 * 100) / 100)
+
+            for i in range(time_count):
+                entry_found = False
+                for entry in sensor_return_data:
+                    if (last_hour_value - delta_t) < entry.timestamp < last_hour_value:
+                        air_temp_1.insert(0, entry.air_temp1)
+                        soil_temp_1.insert(0, entry.soil_temp1)
+                        air_moist_1.insert(0, entry.air_moist1)
+                        soil_moist_1.insert(0, entry.soil_moist1)
+                        cell_1.insert(0, int(entry.cell1 * 0.1875 * 0.001 * 100) / 100)
+                        cell_2.insert(0, int(entry.cell2 * 0.1875 * 0.001 * 100) / 100)
+                        cell_3.insert(0, int(entry.cell3 * 0.1875 * 0.001 * 100) / 100)
+                        last_hour_value = last_hour_value - delta_t
+                        entry_found = True
+                        break
+                if not entry_found:
+                    air_temp_1.insert(0, 0)
+                    soil_temp_1.insert(0, 0)
+                    air_moist_1.insert(0, 0)
+                    soil_moist_1.insert(0, 0)
+                    cell_1.insert(0, 0)
+                    cell_2.insert(0, 0)
+                    cell_3.insert(0, 0)
                     last_hour_value = last_hour_value - delta_t
-                if len(air_moist_1) > time_count - 1:
-                    break
+
 
             sensor_return_dict = {
                 'temp_data': 

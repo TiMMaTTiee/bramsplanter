@@ -160,6 +160,32 @@ class DatabaseInterface():
             logger.error(ex)
             return False
 
+    def update_sensor_value(self, data_id, values, _timestamp):
+        try:
+            last_entry = self.session.query(SensorData).order_by(
+                SensorData.timestamp.desc()).filter(SensorData.id == data_id).first()
+            last_entry.soil_moist1=values['soil_moist1']
+            last_entry.soil_moist2=values['soil_moist2']
+            last_entry.soil_temp1=values['soil_temp1']
+            last_entry.soil_temp2=values['soil_temp2']
+            last_entry.cell1=values['cell1']
+            last_entry.cell2=values['cell2']
+            last_entry.cell3=values['cell3']
+            last_entry.air_moist1=values['air_moist1']
+            last_entry.air_temp1=values['air_temp1']
+            last_entry.solar_bool=values['solar_bool']
+            last_entry.air_moist2=values['air_moist2']
+            last_entry.air_temp2=values['air_temp2']
+            last_entry.lux=values['lux']
+            last_entry.flow_rate=values['flow_rate']
+            last_entry.timestamp=_timestamp
+            self.session.commit()
+            return last_entry.id
+        except exc.SQLAlchemyError as ex:
+            self.session.rollback()
+            logger.error(ex)
+            return False
+
     def get_latest_sensor_data(self, plot_id):
         try:
             last_entry = self.session.query(SensorData).order_by(

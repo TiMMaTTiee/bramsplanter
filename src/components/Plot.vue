@@ -6,9 +6,9 @@
     <b-col>
       <b-row>
         <b-button-group>
-          <b-button @click="newTimeCount(-1)">-</b-button>
+          <b-button @click="newTimeCount(-2)">-</b-button>
           <b-button disabled> {{ timeCount }} </b-button>
-          <b-button @click="newTimeCount(+1)">+</b-button>
+          <b-button @click="newTimeCount(+2)">+</b-button>
         </b-button-group>
       </b-row>
 
