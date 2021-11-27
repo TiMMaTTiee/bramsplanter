@@ -51,7 +51,10 @@ Before getting started, you should have the following installed and running:
 	```
 	$ yarn install
 	```
-
+* Migrations
+	- flask db init
+	- flask db migrate -m "message"
+	- flask db upgrade
 
 ## Development Server
 

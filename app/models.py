@@ -56,6 +56,7 @@ class SensorData(Base):
     lux = Column(Integer)
     flow_rate = Column(Integer)
     timestamp = Column(DateTime)
+    latest_update = Column(DateTime)
     plots_id = Column(Integer)
 
     @property
@@ -63,6 +64,7 @@ class SensorData(Base):
        """Return object data in easily serializable format"""
        return {
            'timestamp': self.timestamp,
+           'latest_update': self.latest_update,
            'soil_moist1': self.soil_moist1,
            'soil_moist2': self.soil_moist2,
            'soil_temp1': self.soil_temp1,

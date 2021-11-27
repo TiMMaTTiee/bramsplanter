@@ -1,8 +1,6 @@
 <template>
   <b-row class="panel">
-    <b-col>
-      <h3>Data</h3>
-    </b-col>
+    <h3>Data</h3>
     <b-col>
       <b-row>
         <b-button-group>

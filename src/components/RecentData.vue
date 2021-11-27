@@ -29,7 +29,7 @@
           </div>
           <div v-else>{{ recentData[field['key']] }} C</div>
         </b-badge>
-        <b-badge v-else-if="field['key'] == 'timestamp'" variant="primary"
+        <b-badge v-else-if="field['key'] == 'latest_update'" variant="primary"
           >{{ recentData[field['key']] }}
         </b-badge>
         <b-badge v-else variant="primary"
@@ -73,7 +73,7 @@ export default {
         { key: 'soil_temp1', label: 'Soil temperature 1' },
         { key: 'soil_temp2', label: 'Soil temperature 2' },
         { key: 'solar_bool', label: 'Solar on' },
-        { key: 'timestamp', label: 'Timestamp' },
+        { key: 'latest_update', label: 'Latest update' },
       ],
     }
   },

@@ -116,4 +116,11 @@ body {
   overflow-y: scroll;
   margin-top: 1rem;
 }
+
+h3 {
+  clear: both;
+  float: left;
+  margin-right: 100%;
+  width: 100%;
+}
 </style>
