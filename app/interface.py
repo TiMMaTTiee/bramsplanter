@@ -178,7 +178,6 @@ class DatabaseInterface():
             last_entry.air_temp2=values['air_temp2']
             last_entry.lux=values['lux']
             last_entry.flow_rate=values['flow_rate']
-            last_entry.timestamp=_timestamp
             self.session.commit()
             return last_entry.id
         except exc.SQLAlchemyError as ex:
