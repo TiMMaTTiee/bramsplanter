@@ -73,14 +73,43 @@ class SensorUpdate(Resource):
         return 'Bedankt voor je data, slet', 200
 
 
-@api_rest.route('/get-settings')
-class SetSettings(Resource):
+@api_rest.route('/get-esp-settings')
+class GetEspSettings(Resource):
     def get(self):
-        print(request.args.get('api_key'))
-        print(request.args.get('type'))
-        print(request.args.get('value'))
-        print(request.args.get('bullshit'))
-        return '', 200
+        try:
+            api_key = request.args.get('api_key')
+            plot = dbi.get_plot_by_api_key(api_key)
+
+            esp_settings = dbi.get_esp_settings(plot.id)
+            esp_return_data = {
+                'manual_trigger': esp_settings.manual_trigger, 'manual_trigger_2': esp_settings.manual_trigger_2, 
+                'manual_amount': esp_settings.manual_amount, 'manual_amount_2': esp_settings.manual_amount_2,
+                'update_interval': esp_settings.update_interval, 'reserved_1': esp_settings.reserved_1, 'reserved_2': esp_settings.reserved_2}
+
+            sensor_return_dict = {'data': esp_return_data}
+            dbi.reset_esp_settings(plot.id)
+            return jsonify(sensor_return_dict)
+        except Exception as e:
+            print(e)
+            return {'data': e}, 400
+
+@api_rest.route('/get-esp-settings-uuid/<string:user_uuid>')
+class GetEspSettingsUuid(Resource):
+    def get(self, user_uuid):
+        try:
+            plot = dbi.get_plot_uuid(user_uuid)
+
+            esp_settings = dbi.get_esp_settings(plot)
+            esp_return_data = {
+                'manual_trigger': esp_settings.manual_trigger, 'manual_trigger_2': esp_settings.manual_trigger_2, 
+                'manual_amount': esp_settings.manual_amount, 'manual_amount_2': esp_settings.manual_amount_2,
+                'update_interval': esp_settings.update_interval, 'reserved_1': esp_settings.reserved_1, 'reserved_2': esp_settings.reserved_2}
+
+            sensor_return_dict = {'data': esp_return_data}
+            return jsonify(sensor_return_dict)
+        except Exception as e:
+            print(e)
+            return {'data': e}, 400
 
 
 @api_rest.route('/verify_user/<string:username>/<string:password>')
@@ -107,6 +136,7 @@ class RecentData(Resource):
             return jsonify(sensor_return_dict)
         except Exception as e:
             print(e)
+            return {'data': e}, 400
 
 
 @api_rest.route('/all_data/<string:user_uuid>/<string:time_type>/<int:time_count>')
@@ -183,6 +213,7 @@ class AllData(Resource):
             return jsonify(sensor_return_dict)
         except Exception as e:
             print(e)
+            return {'data': e}, 400
 
 
 @api_rest.route('/recent_image/<string:user_uuid>')
@@ -196,6 +227,7 @@ class RecentImage(Resource):
             return jsonify(return_data_dict)
         except Exception as e:
             print(e)
+            return {'data': e}, 400
 
 
 @api_rest.route('/secure-resource/<string:resource_id>')

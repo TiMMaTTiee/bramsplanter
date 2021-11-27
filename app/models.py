@@ -64,7 +64,7 @@ class SensorData(Base):
        """Return object data in easily serializable format"""
        return {
            'timestamp': self.timestamp,
-           'latest_update': self.latest_update,
+           'latest_update': self.latest_update.strftime("%Y-%m-%d %H:%M:%S"),
            'soil_moist1': self.soil_moist1,
            'soil_moist2': self.soil_moist2,
            'soil_temp1': self.soil_temp1,

@@ -1,9 +1,13 @@
 <template>
   <b-row class="panel">
     <h3>Latest data</h3>
-    <b-alert show v-for="(field, id) in fields" v-bind:key="id.id">
-      <b-col cols="8"> {{ field['label'] }}: </b-col>
-      <b-col cols="4">
+    <div
+      v-for="(field, id) in getActiveFields"
+      v-bind:key="id.id"
+      class="data-block"
+    >
+      <b-alert show>
+        {{ field['label'] }}
         <b-badge
           v-if="
             field['key'] == 'cell1' ||
@@ -29,18 +33,31 @@
           </div>
           <div v-else>{{ recentData[field['key']] }} C</div>
         </b-badge>
-        <b-badge v-else-if="field['key'] == 'latest_update'" variant="primary"
-          >{{ recentData[field['key']] }}
+        <b-badge v-else-if="field['key'] == 'latest_update'" variant="primary">
+          {{ getTimezoned(recentData[field['key']]) }}
+        </b-badge>
+        <b-badge v-else-if="field['key'] == 'solar_bool'" variant="primary">
+          <div v-if="recentData[field['key']] == 0">True</div>
+          <div v-else>False</div>
         </b-badge>
         <b-badge v-else variant="primary"
           >{{ recentData[field['key']] }}
           %
         </b-badge>
-      </b-col>
-    </b-alert>
-    <b-table striped hover :items="recentDataArray" :fields="fields"></b-table>
-    <b-form-checkbox v-model="dumbTempUnit" name="check-button" switch>
-      Fahrenheit
+      </b-alert>
+    </div>
+    <b-form-checkbox
+      style="margin-right: 2rem"
+      v-model="dumbTempUnit"
+      name="check-button"
+      switch
+    >
+      <p v-if="dumbTempUnit">Fahrenheit</p>
+      <p v-else>Celcius</p>
+    </b-form-checkbox>
+    <b-form-checkbox v-model="dumbTimeUnit" name="check-button" switch>
+      <p v-if="dumbTimeUnit">Los Angeles</p>
+      <p v-else>Amsterdam</p>
     </b-form-checkbox>
   </b-row>
 </template>
@@ -49,15 +66,27 @@
 /* eslint-disable */
 /* eslint-disable no-console */
 import { mapState, mapActions } from 'vuex'
+import moment from 'moment-timezone'
 
 export default {
   name: 'RecentDataView',
   data() {
     return {
       recentData: null,
-      recentDataArray: [],
       recentImage: null,
       dumbTempUnit: false,
+      dumbTimeUnit: false,
+      enabledSensors: [
+        'air_moist1',
+        'air_temp1',
+        'cell1',
+        'cell2',
+        'cell3',
+        'soil_moist1',
+        'soil_temp1',
+        'solar_bool',
+        'latest_update',
+      ],
       fields: [
         { key: 'air_moist1', label: 'Air moisture 1' },
         { key: 'air_moist2', label: 'Air moisture 2' },
@@ -79,6 +108,13 @@ export default {
   },
   methods: {
     ...mapActions('data', ['getRecent', 'getRecentImage']),
+    getTimezoned(datetime) {
+      var london = moment.tz(datetime, 'Europe/London')
+      var losAngeles = london.clone().tz('America/Los_Angeles')
+      var amsterdam = london.clone().tz('Europe/Amsterdam')
+      if (this.dumbTimeUnit) return losAngeles.format('YYYY-MM-DD HH:mm:ss')
+      return amsterdam.format('YYYY-MM-DD HH:mm:ss')
+    },
   },
   mounted() {},
   computed: {
@@ -86,6 +122,13 @@ export default {
       currentRecent: (state) => state.data.recent,
       currentRecentImage: (state) => state.data.recentImage,
     }),
+    getActiveFields() {
+      var activeFields = []
+      this.fields.forEach((field) => {
+        if (this.enabledSensors.includes(field['key'])) activeFields.push(field)
+      })
+      return activeFields
+    },
   },
   created() {
     this.getRecent({ args: [this.$store.state.auth.user.uuid] })
@@ -101,7 +144,6 @@ export default {
   watch: {
     currentRecent(values) {
       this.recentData = values.data
-      this.recentDataArray[0] = values.data
     },
     currentRecentImage(values) {
       this.recentImage = values.data
@@ -113,4 +155,11 @@ export default {
 <!-- Add 'scoped' attribute to limit CSS to this component only -->
 
 <style>
+.data-block {
+  margin-right: 2rem;
+  width: 20%;
+}
+.badge {
+  float: right;
+}
 </style>

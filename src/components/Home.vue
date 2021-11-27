@@ -11,6 +11,9 @@
     <b-row class="panel">
       <PlotView />
     </b-row>
+    <b-row class="panel">
+      <EspSettingsView />
+    </b-row>
     <b-row> </b-row>
   </b-container>
 </template>
@@ -20,6 +23,7 @@ import { mapState, mapActions } from 'vuex'
 import moment from 'moment'
 import PlotView from './Plot.vue'
 import RecentDataView from './RecentData.vue'
+import EspSettingsView from './EspSettings.vue'
 
 export default {
   name: 'Home',
@@ -35,7 +39,8 @@ export default {
   },
   components: {
     PlotView,
-    RecentDataView
+    RecentDataView,
+    EspSettingsView
   },
   computed: {
     ...mapState({

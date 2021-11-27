@@ -5,7 +5,7 @@ import os
 from functools import wraps
 from datetime import datetime, timedelta
 
-from app.models import Users, Plots, Sensors, SensorData, Base
+from app.models import Users, Plots, Sensors, SensorData, EspSettings, Base
 from datetime import datetime
 import logging
 import uuid
@@ -206,18 +206,40 @@ class DatabaseInterface():
             self.session.rollback()
             logging.error(ex)
             return False
-
-    def get_moist_on_hour(self, user_id, hour):
+    
+    def get_esp_settings(self, plot_id):
         try:
-            plot_id = self.get_plot(user_id)
-            target_hour_max = datetime.utcnow()+timedelta(hours=2)
-            target_hour_min = datetime.utcnow()+timedelta(hours=2) - timedelta(hours=hour)
-            moist = self.session.query(SensorData).filter(SensorData.plots_id == plot_id,
-                                                          SensorData.timestamp >= target_hour_min,
-                                                          SensorData.timestamp <= target_hour_max).all()
-            for moists in moist:
-                print(moists.value)
-            return moist
+            settings = self.session.query(EspSettings).filter(EspSettings.plots_id == plot_id).first()
+            return settings
+        except exc.SQLAlchemyError as ex:
+            self.session.rollback()
+            logging.error(ex)
+            return False
+    
+    def update_esp_settings(self, plot_id, values):
+        try:
+            settings = self.session.query(EspSettings).filter(EspSettings.plots_id == plot_id).first()
+            settings.manual_trigger = values['manual_trigger']
+            settings.manual_trigger_2 = values['manual_trigger_2']
+            settings.manual_amount = values['manual_trigger_2']
+            settings.manual_amount_2 = values['manual_trigger_2']
+            settings.update_interval = values['manual_trigger_2']
+            settings.reserved_1 = values['reserved_1']
+            settings.reserved_2 = values['reserved_2']
+            self.session.commit()
+            return settings.id
+        except exc.SQLAlchemyError as ex:
+            self.session.rollback()
+            logging.error(ex)
+            return False
+
+    def reset_esp_settings(self, plot_id):
+        try:
+            settings = self.session.query(EspSettings).filter(EspSettings.plots_id == plot_id).first()
+            settings.manual_trigger = 0
+            settings.manual_trigger_2 = 0
+            self.session.commit()
+            return settings.id
         except exc.SQLAlchemyError as ex:
             self.session.rollback()
             logging.error(ex)

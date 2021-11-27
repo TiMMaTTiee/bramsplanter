@@ -17,7 +17,6 @@
         </b-nav-item>
       </b-navbar-nav>
     </b-navbar>
-
     <router-view v-if="isAuthenticated" id="router-view" class="page" />
   </div>
 </template>
@@ -120,7 +119,6 @@ body {
 h3 {
   clear: both;
   float: left;
-  margin-right: 100%;
   width: 100%;
 }
 </style>
