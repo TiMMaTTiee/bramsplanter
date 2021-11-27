@@ -89,6 +89,9 @@ class EspSettings(Base):
     manual_amount = Column(Integer)
     manual_trigger_2 = Column(Integer)
     manual_amount_2 = Column(Integer)
+    update_interval = Column(Integer)
+    reserved_1 = Column(Integer)
+    reserved_2 = Column(Integer)
 
 
 '''

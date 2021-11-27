@@ -23,6 +23,9 @@
     <b-col>
       <MoistView />
     </b-col>
+    <b-col>
+      <CellsView />
+    </b-col>
   </b-row>
 </template>
 
@@ -31,6 +34,7 @@
 /* eslint-disable no-console */
 import { mapState, mapActions } from 'vuex'
 import MoistView from './Moist.vue'
+import CellsView from './Cells.vue'
 import RecentDataView from './RecentData.vue'
 
 export default {
@@ -44,15 +48,26 @@ export default {
   },
   components: {
     MoistView,
+    CellsView,
     RecentDataView,
   },
   methods: {
     ...mapActions('data', ['setTimeCount', 'setTimeType']),
+    ...mapActions('data', ['getMoist']),
+
     newTimeCount(delta) {
       if (this.timeCount + delta > 0) {
         this.timeCount += delta
         this.setTimeCount(this.timeCount)
       }
+
+      this.getMoist({
+        args: [
+          this.$store.state.auth.user.uuid,
+          this.timeTypes[this.timeType],
+          this.timeCount,
+        ],
+      })
     },
     newTimeType(delta) {
       if (
@@ -62,11 +77,39 @@ export default {
         this.timeType += delta
         this.setTimeType(this.timeTypes[this.timeType])
       }
+
+      this.getMoist({
+        args: [
+          this.$store.state.auth.user.uuid,
+          this.timeTypes[this.timeType],
+          this.timeCount,
+        ],
+      })
     },
   },
   mounted() {},
   computed: {},
-  created() {},
+  created() {
+    this.getMoist({
+      args: [
+        this.$store.state.auth.user.uuid,
+        this.timeTypes[this.timeType],
+        this.timeCount,
+      ],
+    })
+    this.intervalId = setInterval(() => {
+      this.getMoist({
+        args: [
+          this.$store.state.auth.user.uuid,
+          this.timeTypes[this.timeType],
+          this.timeCount,
+        ],
+      })
+    }, 10000)
+  },
+  beforeDestroy() {
+    clearInterval(this.intervalId)
+  },
   beforeDestroy() {},
   watch: {},
 }

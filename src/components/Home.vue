@@ -4,26 +4,6 @@
       <b-col style="margin: 0rem 1rem 0rem 0rem">
         <h1>Hi {{ $store.state.auth.user.name }}</h1>
       </b-col>
-      <b-col>
-        <b-carousel
-          id="carousel-1"
-          v-model="slide"
-          :interval="0"
-          controls
-          indicators
-          background="rgb(221, 221, 221)"
-          img-width="10"
-          img-height="2"
-        >
-          <b-carousel-slide
-            v-for="plot in plots"
-            :key="plot.id"
-            :caption="plot.name"
-            img-blank
-          >
-          </b-carousel-slide>
-        </b-carousel>
-      </b-col>
     </b-row>
     <b-row class="panel">
       <RecentDataView />

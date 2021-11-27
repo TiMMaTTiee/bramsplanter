@@ -14,11 +14,11 @@
 import { mapState, mapActions } from 'vuex'
 
 export default {
-  name: 'MoistView',
+  name: 'CellsView',
   data() {
     return {
-      graphName: 'Humidity',
-      graphDetail: 'Humidity over time per ',
+      graphName: 'Battery voltage',
+      graphDetail: 'Cell voltage over time per ',
       timeType: 'hour',
       timeCount: 5,
       xAxisValues: [],
@@ -112,9 +112,9 @@ export default {
         },
         yAxis: {
           title: {
-            text: 'Percentage',
+            text: 'Voltage',
           },
-          valueSuffix: '%',
+          valueSuffix: 'V',
           plotLines: [
             {
               value: 0,
@@ -124,7 +124,7 @@ export default {
           ],
         },
         tooltip: {
-          valueSuffix: '%',
+          valueSuffix: 'V',
         },
         series: this.series,
       }
@@ -135,7 +135,7 @@ export default {
       this.cellData = values
     },
     currentMoist(count) {
-      this.series = count.perc_data
+      this.series = count.cell_data
       this.setAxisValues()
     },
     currentTimeType(type) {

@@ -3,7 +3,7 @@ REST API Resource Routing
 http://flask-restplus.readthedocs.io
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask import jsonify, request, abort
 from flask_restx import Resource
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -142,21 +142,72 @@ class RecentData(Resource):
         try:
             plot_id = dbi.get_plot_uuid(user_uuid)
             sensor_return_data = dbi.get_latest_sensor_data(plot_id)
+            
             sensor_return_dict = {'data': sensor_return_data.serialize}
             return jsonify(sensor_return_dict)
         except Exception as e:
             print(e)
 
 
-@api_rest.route('/all_data/<string:user_uuid>')
-class RecentData(Resource):
+@api_rest.route('/all_data/<string:user_uuid>/<string:time_type>/<int:time_count>')
+class AllData(Resource):
     """ Unsecure Resource Class: Inherit from Resource """
 
-    def get(self, user_uuid):
+    def get(self, user_uuid, time_type, time_count):
         try:
             plot_id = dbi.get_plot_uuid(user_uuid)
             sensor_return_data = dbi.get_all_sensor_data(plot_id)
-            sensor_return_dict = {'data': [i.serialize for i in sensor_return_data]}
+
+            air_moist_1 = []
+            soil_moist_1 = []
+
+            air_temp_1 = []
+            soil_temp_1 = []
+
+            cell_1 = []
+            cell_2 = []
+            cell_3 = []
+            
+            last_hour_value = datetime.today()
+
+            if time_type == 'hour':
+                delta_t = timedelta(hours=1)
+            if time_type == 'day':
+                delta_t = timedelta(days=1)
+            if time_type == 'week':
+                delta_t = timedelta(weeks=1)
+            print('time ', time_type)
+            for entry in sensor_return_data:
+                if (last_hour_value - delta_t) < entry.timestamp < last_hour_value:
+                    air_temp_1.insert(0, entry.air_temp1)
+                    soil_temp_1.insert(0, entry.soil_temp1)
+                    air_moist_1.insert(0, entry.air_moist1)
+                    soil_moist_1.insert(0, entry.soil_moist1)
+                    cell_1.insert(0, int(entry.cell1 * 0.1875 * 0.001 * 100) / 100)
+                    cell_2.insert(0, int(entry.cell2 * 0.1875 * 0.001 * 100) / 100)
+                    cell_3.insert(0, int(entry.cell3 * 0.1875 * 0.001 * 100) / 100)
+                    last_hour_value = last_hour_value - delta_t
+                if len(air_moist_1) > time_count - 1:
+                    break
+
+            sensor_return_dict = {
+                'temp_data': 
+                    [
+                        {'name': 'Air temperature 1', 'data': air_temp_1}, 
+                        {'name': 'Soil temperature 1', 'data': soil_temp_1}
+                    ],
+                'perc_data': 
+                    [
+                        {'name': 'Air moisture 1', 'data': air_moist_1}, 
+                        {'name': 'Soil moisture 1', 'data': soil_moist_1}
+                    ],
+                'cell_data': 
+                    [
+                        {'name': 'Cell 1', 'data': cell_1}, 
+                        {'name': 'Cell 2', 'data': cell_2},
+                        {'name': 'Cell 3', 'data': cell_3}
+                    ]
+            }
             return jsonify(sensor_return_dict)
         except Exception as e:
             print(e)
