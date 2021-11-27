@@ -24,8 +24,10 @@
             field['key'] == 'air_temp2'
           "
           variant="primary"
-          >{{ recentData[field['key']] }}
-          C
+          ><div v-if="dumbTempUnit">
+            {{ Math.round(recentData[field['key']] * 1.8) + 32 }} F
+          </div>
+          <div v-else>{{ recentData[field['key']] }} C</div>
         </b-badge>
         <b-badge v-else-if="field['key'] == 'timestamp'" variant="primary"
           >{{ recentData[field['key']] }}
@@ -37,6 +39,9 @@
       </b-col>
     </b-alert>
     <b-table striped hover :items="recentDataArray" :fields="fields"></b-table>
+    <b-form-checkbox v-model="dumbTempUnit" name="check-button" switch>
+      Fahrenheit
+    </b-form-checkbox>
   </b-row>
 </template>
 
@@ -52,6 +57,7 @@ export default {
       recentData: null,
       recentDataArray: [],
       recentImage: null,
+      dumbTempUnit: false,
       fields: [
         { key: 'air_moist1', label: 'Air moisture 1' },
         { key: 'air_moist2', label: 'Air moisture 2' },
