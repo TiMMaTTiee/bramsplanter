@@ -169,6 +169,7 @@ class AllData(Resource):
 
             air_moist_1 = []
             soil_moist_1 = []
+            soil_moist_2 = []
 
             air_temp_1 = []
             soil_temp_1 = []
@@ -194,6 +195,7 @@ class AllData(Resource):
                         soil_temp_1.insert(0, entry.soil_temp1)
                         air_moist_1.insert(0, entry.air_moist1)
                         soil_moist_1.insert(0, entry.soil_moist1)
+                        soil_moist_2.insert(0, entry.soil_moist2)
                         cell_1.insert(0, int(entry.cell1 * 0.1875 * 0.001 * 100) / 100)
                         cell_2.insert(0, int(entry.cell2 * 0.1875 * 0.001 * 100) / 100)
                         cell_3.insert(0, int(entry.cell3 * 0.1875 * 0.001 * 100) / 100)
@@ -205,6 +207,7 @@ class AllData(Resource):
                     soil_temp_1.insert(0, 0)
                     air_moist_1.insert(0, 0)
                     soil_moist_1.insert(0, 0)
+                    soil_moist_2.insert(0, 0)
                     cell_1.insert(0, 0)
                     cell_2.insert(0, 0)
                     cell_3.insert(0, 0)
@@ -220,7 +223,8 @@ class AllData(Resource):
                 'perc_data': 
                     [
                         {'name': 'Air moisture 1', 'data': air_moist_1}, 
-                        {'name': 'Soil moisture 1', 'data': soil_moist_1}
+                        {'name': 'Soil moisture 1', 'data': soil_moist_1},
+                        {'name': 'Soil moisture 2', 'data': soil_moist_2},
                     ],
                 'cell_data': 
                     [

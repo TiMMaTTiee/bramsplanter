@@ -84,6 +84,7 @@ export default {
       dumbTimeUnit: false,
       enabledSensors: [
         'air_moist1',
+        'soil_moist2',
         'air_temp1',
         'cell1',
         'cell2',
