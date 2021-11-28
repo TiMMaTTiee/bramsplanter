@@ -51,11 +51,17 @@
       v-model="dumbTempUnit"
       name="check-button"
       switch
+      size="lg"
     >
       <p v-if="dumbTempUnit">Fahrenheit</p>
       <p v-else>Celcius</p>
     </b-form-checkbox>
-    <b-form-checkbox v-model="dumbTimeUnit" name="check-button" switch>
+    <b-form-checkbox
+      v-model="dumbTimeUnit"
+      name="check-button"
+      switch
+      size="lg"
+    >
       <p v-if="dumbTimeUnit">Los Angeles</p>
       <p v-else>Amsterdam</p>
     </b-form-checkbox>

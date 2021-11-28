@@ -221,13 +221,11 @@ class DatabaseInterface():
             settings = self.session.query(EspSettings).filter(EspSettings.plots_id == plot_id).first()
             settings.manual_trigger = values['manual_trigger']
             settings.manual_trigger_2 = values['manual_trigger_2']
-            settings.manual_amount = values['manual_trigger_2']
-            settings.manual_amount_2 = values['manual_trigger_2']
-            settings.update_interval = values['manual_trigger_2']
-            settings.reserved_1 = values['reserved_1']
-            settings.reserved_2 = values['reserved_2']
+            settings.manual_amount = values['manual_amount']
+            settings.manual_amount_2 = values['manual_amount_2']
+            settings.update_interval = values['update_interval']
             self.session.commit()
-            return settings.id
+            return True
         except exc.SQLAlchemyError as ex:
             self.session.rollback()
             logging.error(ex)

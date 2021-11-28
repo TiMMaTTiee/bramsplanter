@@ -93,7 +93,7 @@ class GetEspSettings(Resource):
             print(e)
             return {'data': e}, 400
 
-@api_rest.route('/get-esp-settings-uuid/<string:user_uuid>')
+@api_rest.route('/get_esp_settings_uuid/<string:user_uuid>')
 class GetEspSettingsUuid(Resource):
     def get(self, user_uuid):
         try:
@@ -107,6 +107,25 @@ class GetEspSettingsUuid(Resource):
 
             sensor_return_dict = {'data': esp_return_data}
             return jsonify(sensor_return_dict)
+        except Exception as e:
+            print(e)
+            return {'data': e}, 400
+
+
+@api_rest.route('/set_esp_settings/<string:user_uuid>/<int:manual_trigger>/<int:manual_trigger_2>/<int:manual_amount>/<int:manual_amount_2>/<int:update_interval>')
+class SetEspSettingsUuid(Resource):
+    def get(self, user_uuid, manual_trigger, manual_trigger_2, manual_amount, manual_amount_2, update_interval):
+        try:
+            plot = dbi.get_plot_uuid(user_uuid)
+            print(manual_trigger)
+            print(manual_trigger_2)
+            settings = {
+                'manual_trigger': manual_trigger, 'manual_trigger_2': manual_trigger_2, 
+                'manual_amount': manual_amount, 'manual_amount_2': manual_amount_2,
+                'update_interval': update_interval, 'reserved_1': 0, 'reserved_2': 0}
+            result = dbi.update_esp_settings(plot, settings)
+            return_dict = {'data': result}
+            return jsonify(return_dict)
         except Exception as e:
             print(e)
             return {'data': e}, 400
