@@ -19,15 +19,18 @@ load_dotenv()  # take environment variables from .env.
 class DatabaseInterface():
     def __init__(self, initialize_database=False, test_db=False):
         self.test_db = test_db
+        uri = os.getenv("DATABASE_URL")  # or other relevant config var
+        if uri and uri.startswith("postgres://"):
+            uri = uri.replace("postgres://", "postgresql://", 1)
         if test_db:
             self.engine = create_engine('sqlite:///:memory:', echo=True)
         else:
             logger.info('Connecting to database at %s',
-                        os.environ.get("DATABASE_URL"))
+                        uri)
             print('Connecting to database at %s',
                   os.environ.get("DATABASE_URL"))
-            self.engine = create_engine(os.environ.get(
-                "DATABASE_URL"), echo=False, isolation_level='READ COMMITTED')
+            self.engine = create_engine(
+                uri, echo=False, isolation_level='READ COMMITTED')
         if initialize_database:
             Base.metadata.create_all(self.engine)
 
@@ -136,7 +139,7 @@ class DatabaseInterface():
     def add_sensor_value(self, plot_id, values, _timestamp):
         try:
             new_value = SensorData(
-                plots_id=plot_id, 
+                plots_id=plot_id,
                 soil_moist1=values['soil_moist1'],
                 soil_moist2=values['soil_moist2'],
                 soil_temp1=values['soil_temp1'],
@@ -165,20 +168,20 @@ class DatabaseInterface():
         try:
             last_entry = self.session.query(SensorData).order_by(
                 SensorData.timestamp.desc()).filter(SensorData.id == data_id).first()
-            last_entry.soil_moist1=values['soil_moist1']
-            last_entry.soil_moist2=values['soil_moist2']
-            last_entry.soil_temp1=values['soil_temp1']
-            last_entry.soil_temp2=values['soil_temp2']
-            last_entry.cell1=values['cell1']
-            last_entry.cell2=values['cell2']
-            last_entry.cell3=values['cell3']
-            last_entry.air_moist1=values['air_moist1']
-            last_entry.air_temp1=values['air_temp1']
-            last_entry.solar_bool=values['solar_bool']
-            last_entry.air_moist2=values['air_moist2']
-            last_entry.air_temp2=values['air_temp2']
-            last_entry.lux=values['lux']
-            last_entry.flow_rate=values['flow_rate']
+            last_entry.soil_moist1 = values['soil_moist1']
+            last_entry.soil_moist2 = values['soil_moist2']
+            last_entry.soil_temp1 = values['soil_temp1']
+            last_entry.soil_temp2 = values['soil_temp2']
+            last_entry.cell1 = values['cell1']
+            last_entry.cell2 = values['cell2']
+            last_entry.cell3 = values['cell3']
+            last_entry.air_moist1 = values['air_moist1']
+            last_entry.air_temp1 = values['air_temp1']
+            last_entry.solar_bool = values['solar_bool']
+            last_entry.air_moist2 = values['air_moist2']
+            last_entry.air_temp2 = values['air_temp2']
+            last_entry.lux = values['lux']
+            last_entry.flow_rate = values['flow_rate']
             last_entry.latest_update = _timestamp
             self.session.commit()
             return last_entry.id
@@ -206,19 +209,21 @@ class DatabaseInterface():
             self.session.rollback()
             logging.error(ex)
             return False
-    
+
     def get_esp_settings(self, plot_id):
         try:
-            settings = self.session.query(EspSettings).filter(EspSettings.plots_id == plot_id).first()
+            settings = self.session.query(EspSettings).filter(
+                EspSettings.plots_id == plot_id).first()
             return settings
         except exc.SQLAlchemyError as ex:
             self.session.rollback()
             logging.error(ex)
             return False
-    
+
     def update_esp_settings(self, plot_id, values):
         try:
-            settings = self.session.query(EspSettings).filter(EspSettings.plots_id == plot_id).first()
+            settings = self.session.query(EspSettings).filter(
+                EspSettings.plots_id == plot_id).first()
             settings.manual_trigger = values['manual_trigger']
             settings.manual_trigger_2 = values['manual_trigger_2']
             settings.manual_amount = values['manual_amount']
@@ -233,7 +238,8 @@ class DatabaseInterface():
 
     def reset_esp_settings(self, plot_id):
         try:
-            settings = self.session.query(EspSettings).filter(EspSettings.plots_id == plot_id).first()
+            settings = self.session.query(EspSettings).filter(
+                EspSettings.plots_id == plot_id).first()
             settings.manual_trigger = 0
             settings.manual_trigger_2 = 0
             self.session.commit()
