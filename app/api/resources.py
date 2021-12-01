@@ -44,33 +44,38 @@ class SecureResource(Resource):
 @api_rest.route('/sensor-update')
 class SensorUpdate(Resource):
     def post(self):
-        api_key = request.args.get('api_key')
-        plot = dbi.get_plot_by_api_key(api_key)
-        sensor_values = {
-            'soil_moist1': request.args.get('soil_moist1'),
-            'soil_moist2': request.args.get('soil_moist2'),
-            'soil_temp1': request.args.get('soil_temp1'),
-            'soil_temp2': request.args.get('soil_temp2'),
-            'cell1': request.args.get('cell1'),
-            'cell2': request.args.get('cell2'),
-            'cell3': request.args.get('cell3'),
-            'air_moist1': request.args.get('air_moist1'),
-            'air_temp1': request.args.get('air_temp1'),
-            'solar_bool': request.args.get('solar_bool'),
-            'air_moist2': request.args.get('air_moist2'),
-            'air_temp2': request.args.get('air_temp2'),
-            'lux': request.args.get('lux'),
-            'flow_rate': request.args.get('flow_rate')
-        }
+        try:
+            api_key = request.args.get('api_key')
+            plot = dbi.get_plot_by_api_key(api_key)
+            sensor_values = {
+                'soil_moist1': request.args.get('soil_moist1'),
+                'soil_moist2': request.args.get('soil_moist2'),
+                'soil_temp1': request.args.get('soil_temp1'),
+                'soil_temp2': request.args.get('soil_temp2'),
+                'cell1': request.args.get('cell1'),
+                'cell2': request.args.get('cell2'),
+                'cell3': request.args.get('cell3'),
+                'air_moist1': request.args.get('air_moist1'),
+                'air_temp1': request.args.get('air_temp1'),
+                'solar_bool': request.args.get('solar_bool'),
+                'air_moist2': request.args.get('air_moist2'),
+                'air_temp2': request.args.get('air_temp2'),
+                'lux': request.args.get('lux'),
+                'flow_rate': request.args.get('flow_rate')
+            }
 
-        latest_sensor_data = dbi.get_latest_sensor_data(plot.id)
+            latest_sensor_data = dbi.get_latest_sensor_data(plot.id)
 
-        if (datetime.utcnow() - timedelta(hours=1)) > latest_sensor_data.timestamp:
-            dbi.add_sensor_value(plot.id, sensor_values, datetime.utcnow())
-        else:
-            dbi.update_sensor_value(latest_sensor_data.id, sensor_values, datetime.utcnow())
+            if (datetime.utcnow() - timedelta(hours=1)) > latest_sensor_data.timestamp:
+                dbi.add_sensor_value(plot.id, sensor_values, datetime.utcnow())
+            else:
+                dbi.update_sensor_value(
+                    latest_sensor_data.id, sensor_values, datetime.utcnow())
 
-        return 'Bedankt voor je data, slet', 200
+            return 'Bedankt voor je data, slet', 200
+        except Exception as e:
+            print(e)
+            return {'Error: ': e}, 400
 
 
 @api_rest.route('/get-esp-settings')
@@ -82,7 +87,7 @@ class GetEspSettings(Resource):
 
             esp_settings = dbi.get_esp_settings(plot.id)
             esp_return_data = {
-                'manual_trigger': esp_settings.manual_trigger, 'manual_trigger_2': esp_settings.manual_trigger_2, 
+                'manual_trigger': esp_settings.manual_trigger, 'manual_trigger_2': esp_settings.manual_trigger_2,
                 'manual_amount': esp_settings.manual_amount, 'manual_amount_2': esp_settings.manual_amount_2,
                 'update_interval': esp_settings.update_interval, 'reserved_1': esp_settings.reserved_1, 'reserved_2': esp_settings.reserved_2}
 
@@ -91,7 +96,8 @@ class GetEspSettings(Resource):
             return jsonify(sensor_return_dict)
         except Exception as e:
             print(e)
-            return {'data': e}, 400
+            return {'Error: ': e}, 400
+
 
 @api_rest.route('/get_esp_settings_uuid/<string:user_uuid>')
 class GetEspSettingsUuid(Resource):
@@ -101,7 +107,7 @@ class GetEspSettingsUuid(Resource):
 
             esp_settings = dbi.get_esp_settings(plot)
             esp_return_data = {
-                'manual_trigger': esp_settings.manual_trigger, 'manual_trigger_2': esp_settings.manual_trigger_2, 
+                'manual_trigger': esp_settings.manual_trigger, 'manual_trigger_2': esp_settings.manual_trigger_2,
                 'manual_amount': esp_settings.manual_amount, 'manual_amount_2': esp_settings.manual_amount_2,
                 'update_interval': esp_settings.update_interval, 'reserved_1': esp_settings.reserved_1, 'reserved_2': esp_settings.reserved_2}
 
@@ -120,7 +126,7 @@ class SetEspSettingsUuid(Resource):
             print(manual_trigger)
             print(manual_trigger_2)
             settings = {
-                'manual_trigger': manual_trigger, 'manual_trigger_2': manual_trigger_2, 
+                'manual_trigger': manual_trigger, 'manual_trigger_2': manual_trigger_2,
                 'manual_amount': manual_amount, 'manual_amount_2': manual_amount_2,
                 'update_interval': update_interval, 'reserved_1': 0, 'reserved_2': 0}
             result = dbi.update_esp_settings(plot, settings)
@@ -150,7 +156,7 @@ class RecentData(Resource):
         try:
             plot_id = dbi.get_plot_uuid(user_uuid)
             sensor_return_data = dbi.get_latest_sensor_data(plot_id)
-            
+
             sensor_return_dict = {'data': sensor_return_data.serialize}
             return jsonify(sensor_return_dict)
         except Exception as e:
@@ -177,7 +183,7 @@ class AllData(Resource):
             cell_1 = []
             cell_2 = []
             cell_3 = []
-            
+
             last_hour_value = datetime.today()
 
             if time_type == 'hour':
@@ -196,9 +202,12 @@ class AllData(Resource):
                         air_moist_1.insert(0, entry.air_moist1)
                         soil_moist_1.insert(0, entry.soil_moist1)
                         soil_moist_2.insert(0, entry.soil_moist2)
-                        cell_1.insert(0, int(entry.cell1 * 0.1875 * 0.001 * 100) / 100)
-                        cell_2.insert(0, int(entry.cell2 * 0.1875 * 0.001 * 100) / 100)
-                        cell_3.insert(0, int(entry.cell3 * 0.1875 * 0.001 * 100) / 100)
+                        cell_1.insert(
+                            0, int(entry.cell1 * 0.1875 * 0.001 * 100) / 100)
+                        cell_2.insert(
+                            0, int(entry.cell2 * 0.1875 * 0.001 * 100) / 100)
+                        cell_3.insert(
+                            0, int(entry.cell3 * 0.1875 * 0.001 * 100) / 100)
                         last_hour_value = last_hour_value - delta_t
                         entry_found = True
                         break
@@ -213,22 +222,21 @@ class AllData(Resource):
                     cell_3.insert(0, 0)
                     last_hour_value = last_hour_value - delta_t
 
-
             sensor_return_dict = {
-                'temp_data': 
+                'temp_data':
                     [
-                        {'name': 'Air temperature 1', 'data': air_temp_1}, 
+                        {'name': 'Air temperature 1', 'data': air_temp_1},
                         {'name': 'Soil temperature 1', 'data': soil_temp_1}
                     ],
-                'perc_data': 
+                'perc_data':
                     [
-                        {'name': 'Air moisture 1', 'data': air_moist_1}, 
+                        {'name': 'Air moisture 1', 'data': air_moist_1},
                         {'name': 'Soil moisture 1', 'data': soil_moist_1},
                         {'name': 'Soil moisture 2', 'data': soil_moist_2},
                     ],
-                'cell_data': 
+                'cell_data':
                     [
-                        {'name': 'Cell 1', 'data': cell_1}, 
+                        {'name': 'Cell 1', 'data': cell_1},
                         {'name': 'Cell 2', 'data': cell_2},
                         {'name': 'Cell 3', 'data': cell_3}
                     ]
