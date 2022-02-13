@@ -76,12 +76,21 @@ class DatabaseInterface():
             logger.error(ex)
             return False
 
+    def get_all_plots(self):
+        try:
+            plots = self.session.query(Plots).all()
+            return plots
+        except exc.SQLAlchemyError as ex:
+            self.session.rollback()
+            logger.error(ex)
+            return False
+
     def get_plot_uuid(self, _user_uuid):
         try:
             _user_id = self.get_user_uuid(_user_uuid).id
-            plot = self.session.query(Plots).filter_by(
-                users_id=_user_id).first()
-            return plot.id
+            plots = self.session.query(Plots).filter_by(
+                users_id=_user_id).all()
+            return plots
         except exc.SQLAlchemyError as ex:
             self.session.rollback()
             logger.error(ex)
@@ -229,6 +238,8 @@ class DatabaseInterface():
             settings.manual_amount = values['manual_amount']
             settings.manual_amount_2 = values['manual_amount_2']
             settings.update_interval = values['update_interval']
+            settings.reserved_1 = values['reserved_1']
+            settings.reserved_2 = values['reserved_2']
             self.session.commit()
             return True
         except exc.SQLAlchemyError as ex:
@@ -248,3 +259,28 @@ class DatabaseInterface():
             self.session.rollback()
             logging.error(ex)
             return False
+    
+    def trigger_pump_1(self, plot_id):
+        try:
+            settings = self.session.query(EspSettings).filter(
+                EspSettings.plots_id == plot_id).first()
+            settings.manual_trigger = 1
+            self.session.commit()
+            return settings.id
+        except exc.SQLAlchemyError as ex:
+            self.session.rollback()
+            logging.error(ex)
+            return False
+    
+    def trigger_pump_2(self, plot_id):
+        try:
+            settings = self.session.query(EspSettings).filter(
+                EspSettings.plots_id == plot_id).first()
+            settings.manual_trigger_2 = 1
+            self.session.commit()
+            return settings.id
+        except exc.SQLAlchemyError as ex:
+            self.session.rollback()
+            logging.error(ex)
+            return False
+

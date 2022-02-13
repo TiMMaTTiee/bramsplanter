@@ -61,7 +61,7 @@ export default {
 
       this.getMoist({
         args: [
-          this.$store.state.auth.user.uuid,
+          this.$store.state.plots.activePlot.api_key,
           this.timeTypes[this.timeType],
           this.timeCount,
         ],
@@ -78,7 +78,7 @@ export default {
 
       this.getMoist({
         args: [
-          this.$store.state.auth.user.uuid,
+          this.$store.state.plots.activePlot.api_key,
           this.timeTypes[this.timeType],
           this.timeCount,
         ],
@@ -90,7 +90,7 @@ export default {
   created() {
     this.getMoist({
       args: [
-        this.$store.state.auth.user.uuid,
+        this.$store.state.plots.activePlot.api_key,
         this.timeTypes[this.timeType],
         this.timeCount,
       ],
@@ -98,7 +98,7 @@ export default {
     this.intervalId = setInterval(() => {
       this.getMoist({
         args: [
-          this.$store.state.auth.user.uuid,
+          this.$store.state.plots.activePlot.api_key,
           this.timeTypes[this.timeType],
           this.timeCount,
         ],
@@ -108,7 +108,6 @@ export default {
   beforeDestroy() {
     clearInterval(this.intervalId)
   },
-  beforeDestroy() {},
   watch: {},
 }
 </script>

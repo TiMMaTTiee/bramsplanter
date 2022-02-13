@@ -4,6 +4,7 @@ import axios from 'axios'
 import auth from './modules/auth'
 import status from './modules/status'
 import data from './modules/data'
+import plots from './modules/plots'
 import createPersistedState from 'vuex-persistedstate'
 
 Vue.use(Vuex)
@@ -16,7 +17,8 @@ export default new Vuex.Store({
   modules: {
     auth,
     status,
-    data
+    data,
+    plots
   },
 
   plugins: [createPersistedState()],

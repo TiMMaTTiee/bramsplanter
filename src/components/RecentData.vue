@@ -138,11 +138,11 @@ export default {
     },
   },
   created() {
-    this.getRecent({ args: [this.$store.state.auth.user.uuid] })
-    this.getRecentImage({ args: [this.$store.state.auth.user.uuid] })
+    this.getRecent({ args: [this.$store.state.plots.activePlot.api_key] })
+    this.getRecentImage({ args: [this.$store.state.plots.activePlot.api_key] })
     this.intervalId = setInterval(() => {
-      this.getRecent({ args: [this.$store.state.auth.user.uuid] })
-      this.getRecentImage({ args: [this.$store.state.auth.user.uuid] })
+      this.getRecent({ args: [this.$store.state.plots.activePlot.api_key] })
+      this.getRecentImage({ args: [this.$store.state.plots.activePlot.api_key] })
     }, 10000)
   },
   beforeDestroy() {
