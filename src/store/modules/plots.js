@@ -20,7 +20,6 @@ const actions = {
     var path = 'plots_for_uuid'
     var result = await apiService.apiRequest(path, args)
     commit('setPlots', result.data)
-    commit('newActivePlot', result.data.data[0])
   },
   setActivePlot({ commit }, plot) {
     commit('newActivePlot', plot)
@@ -30,7 +29,6 @@ const actions = {
 const mutations = {
   setPlots(state, value) {
     state.plots = value
-    state.activePlot = value.data[0]
   },
   newActivePlot(state, value) {
     state.activePlot = value

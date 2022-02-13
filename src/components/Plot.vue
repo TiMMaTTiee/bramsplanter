@@ -51,6 +51,7 @@ export default {
   },
   methods: {
     ...mapActions('data', ['setTimeCount', 'setTimeType']),
+    ...mapActions('plots', ['getPlots']),
     ...mapActions('data', ['getMoist']),
 
     newTimeCount(delta) {
@@ -102,6 +103,11 @@ export default {
           this.timeTypes[this.timeType],
           this.timeCount,
         ],
+      })
+      this.getPlots({
+        args: [
+          this.$store.state.auth.user.uuid
+        ]
       })
     }, 10000)
   },

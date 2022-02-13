@@ -6,7 +6,7 @@
       </b-col>
       <b-col>
         <b-dropdown id="dropdown-1" :text="$store.state.plots.activePlot.name" class="m-md-2">
-          <b-dropdown-item v-for="plot in plots" :key="plot.id" @click="selectPlot(plot)">
+          <b-dropdown-item v-for="plot in plots" :key="plot.id" @click="selectPlot(plot.name, plot.id, plot.api_key)">
             {{ plot.name }}
           </b-dropdown-item>
         </b-dropdown>
@@ -61,8 +61,8 @@ export default {
     ...mapActions('plots', ['getPlots', 'setActivePlot']),
     ...mapActions('data', ['setTimeCount', 'setTimeType']),
     ...mapActions('status', ['getEspSettings']),
-    selectPlot (plot) {
-      this.setActivePlot(plot)
+    selectPlot (_name, _id, _apikey) {
+      this.setActivePlot({ name: _name, id: _id, api_key: _apikey })
     }
   },
   created () {
@@ -92,7 +92,6 @@ export default {
     },
     currentPlots (plots) {
       this.plots = plots.data
-      this.selectPlot(plots[0])
     }
   }
 }
