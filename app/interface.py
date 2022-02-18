@@ -127,6 +127,18 @@ class DatabaseInterface():
             logger.error(ex)
             return False
 
+    def update_latest_water(self, _plot_id, _date):
+        try:
+            plot = self.session.query(Plots).filter(
+                Plots.id == _plot_id).first()
+            plot.latest_water = _date
+            self.session.commit()
+            return plot.id
+        except exc.SQLAlchemyError as ex:
+            self.session.rollback()
+            logger.error(ex)
+            return False
+
     def get_sensor_type(self, x):
         return {
             'soil_moist1': 1,
@@ -259,7 +271,7 @@ class DatabaseInterface():
             self.session.rollback()
             logging.error(ex)
             return False
-    
+
     def trigger_pump_1(self, plot_id):
         try:
             settings = self.session.query(EspSettings).filter(
@@ -271,7 +283,7 @@ class DatabaseInterface():
             self.session.rollback()
             logging.error(ex)
             return False
-    
+
     def trigger_pump_2(self, plot_id):
         try:
             settings = self.session.query(EspSettings).filter(
@@ -283,4 +295,3 @@ class DatabaseInterface():
             self.session.rollback()
             logging.error(ex)
             return False
-

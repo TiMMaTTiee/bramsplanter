@@ -73,14 +73,17 @@ class SensorUpdate(Resource):
                 dbi.update_sensor_value(
                     latest_sensor_data.id, sensor_values, datetime.utcnow())
 
-            # Check if soil moist is below limit
-            esp_settings = dbi.get_esp_settings(plot.id)
-            if int(sensor_values['soil_moist1']) < esp_settings.reserved_1:
-                # Trigger pump 1 on next data request
-                dbi.trigger_pump_1(plot.id)
-            if int(sensor_values['soil_moist2']) < esp_settings.reserved_2:
-                # Trigger pump 2 on next data request
-                dbi.trigger_pump_2(plot.id)
+            # Check if it has been more than a day since latest water
+            if (datetime.utcnow() - timedelta(hours=12)) > plot.latest_water:
+                # Check if soil moist is below limit
+                esp_settings = dbi.get_esp_settings(plot.id)
+                if int(sensor_values['soil_moist1']) < esp_settings.reserved_1:
+                    # Trigger pump 1 on next data request
+                    dbi.trigger_pump_1(plot.id)
+                if int(sensor_values['soil_moist2']) < esp_settings.reserved_2:
+                    # Trigger pump 2 on next data request
+                    dbi.trigger_pump_2(plot.id)
+                dbi.update_latest_water(plot.id, datetime.utcnow())
 
             return 'Bedankt voor je data, slet', 200
         except Exception as e:
@@ -254,6 +257,7 @@ class AllData(Resource):
             print(e)
             return {'data': e}, 400
 
+
 @api_rest.route('/recent_image/<string:api_key>')
 class RecentImage(Resource):
     """ Unsecure Resource Class: Inherit from Resource """
@@ -268,6 +272,7 @@ class RecentImage(Resource):
         except Exception as e:
             print(e)
             return {'data': e}, 400
+
 
 @api_rest.route('/post_image')
 class PostImage(Resource):
@@ -284,30 +289,28 @@ class PostImage(Resource):
             print(e)
             return {'data': e}, 400
 
+
 @api_rest.route('/plots_for_uuid/<string:user_uuid>')
 class PlotsForUUID(Resource):
     def get(self, user_uuid):
         try:
             if (user_uuid == 'cc72d57b-a9d3-4c75-bd7f-61a92e950f89'):
-                print("GETALLPLOTS")
                 plots = dbi.get_all_plots()
             else:
-                print("GETSOMEPLOTS")
-
                 plots = dbi.get_plot_uuid(user_uuid)
 
             plots_data = []
             for plot in plots:
-                plot_dict = {'id':plot.id, 'name':plot.name, 'api_key':plot.api_key}
+                plot_dict = {'id': plot.id, 'name': plot.name,
+                             'api_key': plot.api_key}
                 plots_data.append(plot_dict)
-            
+
             plots_dict = {'data': plots_data}
             return jsonify(plots_dict)
 
         except Exception as e:
             print(e)
             return {'data': e}, 400
-
 
 
 @api_rest.route('/secure-resource/<string:resource_id>')

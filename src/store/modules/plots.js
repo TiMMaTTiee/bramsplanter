@@ -3,7 +3,7 @@ import apiService from '../../services/apiService'
 /* eslint-disable */
 const state = {
   plots: null,
-  activePlot: { name: 'plot1', id: 1 }
+  activePlot: { name: 'plot1', id: -1 }
 }
 
 const getters = {
@@ -29,6 +29,9 @@ const actions = {
 const mutations = {
   setPlots(state, value) {
     state.plots = value
+    if (state.activePlot.id === -1) {
+      state.activePlot = value[0]
+    }
   },
   newActivePlot(state, value) {
     state.activePlot = value
