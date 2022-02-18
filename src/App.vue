@@ -45,7 +45,10 @@ export default {
       this.$router.push({ name: 'home' })
     },
     ...mapActions('auth', ['authenticate', 'logout']),
+    ...mapActions('plots', ['setActivePlot']),
     onClickLogout() {
+      this.setActivePlot({ name: '', id: -1, api_key: '' })
+
       this.logout()
       this.returnHome()
     },

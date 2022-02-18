@@ -30,7 +30,7 @@ const mutations = {
   setPlots(state, value) {
     state.plots = value
     if (state.activePlot.id === -1) {
-      state.activePlot = value[0]
+      state.activePlot = value.data[0]
     }
   },
   newActivePlot(state, value) {
