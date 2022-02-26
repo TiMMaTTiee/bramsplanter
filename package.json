@@ -56,9 +56,6 @@
     "last 2 versions",
     "not ie <= 8"
   ],
-  "gitHooks": {
-    "pre-commit": "lint-staged"
-  },
   "prettier": {
     "singleQuote": true,
     "trailingComma": "all",
