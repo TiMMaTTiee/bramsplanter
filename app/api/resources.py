@@ -80,10 +80,12 @@ class SensorUpdate(Resource):
                 if int(sensor_values['soil_moist1']) < esp_settings.reserved_1:
                     # Trigger pump 1 on next data request
                     dbi.trigger_pump_1(plot.id)
+                    dbi.update_latest_water(plot.id, datetime.utcnow())
+
                 if int(sensor_values['soil_moist2']) < esp_settings.reserved_2:
                     # Trigger pump 2 on next data request
                     dbi.trigger_pump_2(plot.id)
-                dbi.update_latest_water(plot.id, datetime.utcnow())
+                    dbi.update_latest_water(plot.id, datetime.utcnow())
 
             return 'Bedankt voor je data, slet', 200
         except Exception as e:
@@ -302,7 +304,7 @@ class PlotsForUUID(Resource):
             plots_data = []
             for plot in plots:
                 plot_dict = {'id': plot.id, 'name': plot.name,
-                             'api_key': plot.api_key}
+                             'api_key': plot.api_key, 'latest_water': plot.latest_water}
                 plots_data.append(plot_dict)
 
             plots_dict = {'data': plots_data}

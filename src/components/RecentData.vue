@@ -46,6 +46,16 @@
         </b-badge>
       </b-alert>
     </div>
+    <div 
+      class="data-block"
+    >
+      <b-alert show>
+        Latest water
+        <b-badge variant="primary">
+          {{ getTimezoned($store.state.plots.activePlot.latest_water) }} 
+        </b-badge>
+      </b-alert>
+    </div>
     <b-form-checkbox
       style="margin-right: 2rem"
       v-model="dumbTempUnit"
