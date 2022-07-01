@@ -6,13 +6,13 @@ import status from './modules/status'
 import data from './modules/data'
 import createPersistedState from 'vuex-persistedstate'
 
-Vue.use(Vuex)
+import { createStore, createLogger  } from 'vuex'
 
 // Make Axios play nice with Django CSRF
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 
-export default new Vuex.Store({
+const store = createStore({
   modules: {
     auth,
     status,
@@ -27,3 +27,5 @@ export default new Vuex.Store({
   mutations: {
   }
 })
+
+export default store;
