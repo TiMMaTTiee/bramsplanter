@@ -65,6 +65,36 @@
 
       <b-form-group
         label-cols="4"
+        label="Minimum water pump 1:"
+        label-align-lg="left"
+        label-for="nested-start-margin"
+      >
+        <b-form-spinbutton
+          style="width: 60%; float: left"
+          v-model="form.limit_1"
+          min="1"
+          max="10000"
+        ></b-form-spinbutton>
+        <p style="width: 30%; float: right">%</p>
+      </b-form-group>
+
+      <b-form-group
+        label-cols="4"
+        label="Minimum water pump 2:"
+        label-align-lg="left"
+        label-for="nested-start-margin"
+      >
+        <b-form-spinbutton
+          style="width: 60%; float: left"
+          v-model="form.limit_2"
+          min="1"
+          max="10000"
+        ></b-form-spinbutton>
+        <p style="width: 30%; float: right">%</p>
+      </b-form-group>
+
+      <b-form-group
+        label-cols="4"
         label="Update interval:"
         label-align-lg="left"
         label-for="nested-start-margin"
@@ -121,6 +151,8 @@ export default {
         manualAmount: null,
         manualAmount_2: null,
         updateInterval: null,
+        limit_1: null,
+        limit_2: null,
       },
       sending: false,
       sendState: null,
@@ -133,13 +165,15 @@ export default {
       this.sending = true
       this.sendState = null
       this.showSendDialog = true
-      var args = [this.$store.state.auth.user.uuid]
+      var args = [this.$store.state.plots.activePlot.api_key]
       args.push(
         this.form.manualTrigger ? 1 : 0,
         this.form.manualTrigger_2 ? 1 : 0,
         this.form.manualAmount,
         this.form.manualAmount_2,
         this.form.updateInterval,
+        this.form.limit_1,
+        this.form.limit_2
       )
       this.setEspSettings({ args: args })
     },
@@ -159,7 +193,7 @@ export default {
     }),
   },
   created() {
-    this.getEspSettings({ args: [this.$store.state.auth.user.uuid] })
+    this.getEspSettings({ args: [this.$store.state.plots.activePlot.api_key] })
   },
   watch: {
     currentEspSettings(values) {
@@ -169,9 +203,10 @@ export default {
       this.form.manualAmount = values.data.manual_amount
       this.form.manualAmount_2 = values.data.manual_amount_2
       this.form.updateInterval = values.data.update_interval
+      this.form.limit_1 = values.data.limit_1
+      this.form.limit_2 = values.data.limit_2
     },
     currentSendState(status) {
-      console.log(status)
       this.sending = false
       this.sendState = status.data
     },

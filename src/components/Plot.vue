@@ -51,6 +51,7 @@ export default {
   },
   methods: {
     ...mapActions('data', ['setTimeCount', 'setTimeType']),
+    ...mapActions('plots', ['getPlots']),
     ...mapActions('data', ['getMoist']),
 
     newTimeCount(delta) {
@@ -61,7 +62,7 @@ export default {
 
       this.getMoist({
         args: [
-          this.$store.state.auth.user.uuid,
+          this.$store.state.plots.activePlot.api_key,
           this.timeTypes[this.timeType],
           this.timeCount,
         ],
@@ -78,7 +79,7 @@ export default {
 
       this.getMoist({
         args: [
-          this.$store.state.auth.user.uuid,
+          this.$store.state.plots.activePlot.api_key,
           this.timeTypes[this.timeType],
           this.timeCount,
         ],
@@ -90,7 +91,7 @@ export default {
   created() {
     this.getMoist({
       args: [
-        this.$store.state.auth.user.uuid,
+        this.$store.state.plots.activePlot.api_key,
         this.timeTypes[this.timeType],
         this.timeCount,
       ],
@@ -98,17 +99,21 @@ export default {
     this.intervalId = setInterval(() => {
       this.getMoist({
         args: [
-          this.$store.state.auth.user.uuid,
+          this.$store.state.plots.activePlot.api_key,
           this.timeTypes[this.timeType],
           this.timeCount,
         ],
+      })
+      this.getPlots({
+        args: [
+          this.$store.state.auth.user.uuid
+        ]
       })
     }, 10000)
   },
   beforeDestroy() {
     clearInterval(this.intervalId)
   },
-  beforeDestroy() {},
   watch: {},
 }
 </script>

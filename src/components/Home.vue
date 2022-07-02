@@ -4,6 +4,13 @@
       <b-col style="margin: 0rem 1rem 0rem 0rem">
         <h1>Hi {{ $store.state.auth.user.name }}</h1>
       </b-col>
+      <b-col>
+        <b-dropdown id="dropdown-1" :text="$store.state.plots.activePlot.name" class="m-md-2">
+          <b-dropdown-item v-for="plot in plots" :key="plot.id" @click="selectPlot(plot.name, plot.id, plot.api_key, plot.latest_water)">
+            {{ plot.name }}
+          </b-dropdown-item>
+        </b-dropdown>
+      </b-col>
     </b-row>
     <b-row class="panel">
       <RecentDataView />
@@ -30,11 +37,8 @@ export default {
   data () {
     return {
       userName: 'null',
-      plots: [
-        { name: 'plot1', id: 1 },
-        { name: 'plot2', id: 2 },
-        { name: 'plot3', id: 3 }
-      ]
+      activePlot: { name: 'plot1', id: 1 },
+      plots: this.$store.state.plots.plots.data
     }
   },
   components: {
@@ -44,19 +48,50 @@ export default {
   },
   computed: {
     ...mapState({
-      currentUser: (state) => state.auth.user
+      currentUser: (state) => state.auth.user,
+      currentPlot: (state) => state.plots.activePlot,
+      currentPlots: (state) => state.plots.plots
     }),
     timeAgo (time) {
       return moment(time).fromNow()
     }
   },
   methods: {
-    ...mapActions('auth', ['user'])
+    ...mapActions('auth', ['user']),
+    ...mapActions('plots', ['getPlots', 'setActivePlot']),
+    ...mapActions('data', ['setTimeCount', 'setTimeType']),
+    ...mapActions('status', ['getEspSettings']),
+    selectPlot (_name, _id, _apikey, _latest_water) {
+      this.setActivePlot({ name: _name, id: _id, api_key: _apikey, latest_water: _latest_water })
+    }
+  },
+  created () {
+    this.getPlots({
+      args: [
+        this.$store.state.auth.user.uuid
+      ]
+    })
   },
   watch: {
-    currentUser (user) {
-      console.log('New user: ', user.name)
-      this.userName = user.name
+    currentUser: {
+      deep: true,
+      handler (user) {
+        this.userName = user.name
+        this.getPlots({
+          args: [
+            this.$store.state.auth.user.uuid
+          ]
+        })
+      }
+    },
+    currentPlot (plot) {
+      this.activePlot = plot
+      this.getEspSettings({ args: [this.$store.state.plots.activePlot.api_key] })
+      this.setTimeCount(5)
+      this.setTimeType('hour')
+    },
+    currentPlots (plots) {
+      this.plots = plots.data
     }
   }
 }

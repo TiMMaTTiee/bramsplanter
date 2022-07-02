@@ -19,10 +19,6 @@ const actions = {
   async authenticate({ commit }, { args }) {
     var path = 'verify_user'
     var result = await apiService.apiRequest(path, args)
-    console.log('response' + result.data.uuid)
-    console.log('request' + args)
-    console.log('request ' + args[0])
-
     commit('setUser', { user: { name: args[0], password: 'secret', isAuthenticated: true, uuid: result.data.uuid } })
   },
   logout({ commit }) {

@@ -26,6 +26,7 @@ class Plots(Base):
     users_id = Column(Integer)
     name = Column(String(45))
     api_key = Column(String(255))
+    latest_water = Column(DateTime)
 
 
 class Sensors(Base):
@@ -61,25 +62,25 @@ class SensorData(Base):
 
     @property
     def serialize(self):
-       """Return object data in easily serializable format"""
-       return {
-           'timestamp': self.timestamp,
-           'latest_update': self.latest_update.strftime("%Y-%m-%d %H:%M:%S"),
-           'soil_moist1': self.soil_moist1,
-           'soil_moist2': self.soil_moist2,
-           'soil_temp1': self.soil_temp1,
-           'soil_temp2': self.soil_temp2,
-           'cell1': self.cell1,
-           'cell2': self.cell2,
-           'cell3': self.cell3,
-           'air_moist1': self.air_moist1,
-           'air_temp1': self.air_temp1,
-           'solar_bool': self.solar_bool,
-           'air_moist2': self.air_moist2,
-           'air_temp2': self.air_temp2,
-           'lux': self.lux,
-           'flow_rate': self.flow_rate
-       }
+        """Return object data in easily serializable format"""
+        return {
+            'timestamp': self.timestamp,
+            'latest_update': self.latest_update.strftime("%Y-%m-%d %H:%M:%S"),
+            'soil_moist1': self.soil_moist1,
+            'soil_moist2': self.soil_moist2,
+            'soil_temp1': self.soil_temp1,
+            'soil_temp2': self.soil_temp2,
+            'cell1': self.cell1,
+            'cell2': self.cell2,
+            'cell3': self.cell3,
+            'air_moist1': self.air_moist1,
+            'air_temp1': self.air_temp1,
+            'solar_bool': self.solar_bool,
+            'air_moist2': self.air_moist2,
+            'air_temp2': self.air_temp2,
+            'lux': self.lux,
+            'flow_rate': self.flow_rate
+        }
 
 
 class EspSettings(Base):
