@@ -6,4 +6,8 @@ COPY ./package.json /package.json
 RUN npm install --global yarn
 RUN npm install -g http-server
 RUN npm install
-RUN http-server dist
+RUN mkdir app
+COPY . /app
+WORKDIR /app
+RUN npm run build
+CMD [ "http-server", "dist" ]
