@@ -2,12 +2,13 @@ FROM python:3.8.5-buster
 ENV PYTHONUNBUFFERED 1
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get update && apt-get install -y default-libmysqlclient-dev libgl1-mesa-dev nodejs curl
-COPY ./package.json /package.json
+
+RUN mkdir /app
+COPY . /app
+WORKDIR /app
 RUN npm install --global yarn
 RUN npm install -g http-server
 RUN npm install
-RUN mkdir app
-COPY . /app
-WORKDIR /app
+
 RUN npm run build
 CMD [ "http-server", "dist" ]
